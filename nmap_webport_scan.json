@@ -1,0 +1,176 @@
+{
+    "45.33.32.156": {
+        "osmatch": {},
+        "ports": [
+            {
+                "protocol": "tcp",
+                "portid": "80",
+                "state": "open",
+                "reason": "syn-ack",
+                "reason_ttl": "52",
+                "service": {
+                    "name": "http",
+                    "product": "Apache httpd",
+                    "version": "2.4.7",
+                    "extrainfo": "(Ubuntu)",
+                    "method": "probed",
+                    "conf": "10"
+                },
+                "cpe": [
+                    {
+                        "cpe": "cpe:/a:apache:http_server:2.4.7"
+                    }
+                ],
+                "scripts": []
+            },
+            {
+                "protocol": "tcp",
+                "portid": "443",
+                "state": "filtered",
+                "reason": "no-response",
+                "reason_ttl": "0",
+                "service": {
+                    "name": "https",
+                    "method": "table",
+                    "conf": "3"
+                },
+                "cpe": [],
+                "scripts": []
+            },
+            {
+                "protocol": "tcp",
+                "portid": "5000",
+                "state": "closed",
+                "reason": "reset",
+                "reason_ttl": "52",
+                "service": {
+                    "name": "upnp",
+                    "method": "table",
+                    "conf": "3"
+                },
+                "cpe": [],
+                "scripts": []
+            },
+            {
+                "protocol": "tcp",
+                "portid": "8000",
+                "state": "closed",
+                "reason": "reset",
+                "reason_ttl": "52",
+                "service": {
+                    "name": "http-alt",
+                    "method": "table",
+                    "conf": "3"
+                },
+                "cpe": [],
+                "scripts": []
+            },
+            {
+                "protocol": "tcp",
+                "portid": "8080",
+                "state": "closed",
+                "reason": "reset",
+                "reason_ttl": "52",
+                "service": {
+                    "name": "http-proxy",
+                    "method": "table",
+                    "conf": "3"
+                },
+                "cpe": [],
+                "scripts": []
+            },
+            {
+                "protocol": "tcp",
+                "portid": "8443",
+                "state": "closed",
+                "reason": "reset",
+                "reason_ttl": "52",
+                "service": {
+                    "name": "https-alt",
+                    "method": "table",
+                    "conf": "3"
+                },
+                "cpe": [],
+                "scripts": []
+            },
+            {
+                "protocol": "tcp",
+                "portid": "8888",
+                "state": "closed",
+                "reason": "reset",
+                "reason_ttl": "52",
+                "service": {
+                    "name": "sun-answerbook",
+                    "method": "table",
+                    "conf": "3"
+                },
+                "cpe": [],
+                "scripts": []
+            }
+        ],
+        "hostname": [
+            {
+                "name": "scanme.org",
+                "type": "user"
+            },
+            {
+                "name": "scanme.nmap.org",
+                "type": "PTR"
+            }
+        ],
+        "macaddress": null,
+        "state": {
+            "state": "up",
+            "reason": "echo-reply",
+            "reason_ttl": "52"
+        }
+    },
+    "runtime": {
+        "time": "1753665255",
+        "timestr": "Sun Jul 27 18:14:15 2025",
+        "summary": "Nmap done at Sun Jul 27 18:14:15 2025; 1 IP address (1 host up) scanned in 11.21 seconds",
+        "elapsed": "11.21",
+        "exit": "success"
+    },
+    "stats": {
+        "scanner": "nmap",
+        "args": "\"C:/Program Files (x86)/Nmap/nmap.exe\" -v -oX - -p 80,443,8080,8443,8000,8888,5000 -sV scanme.org",
+        "start": "1753665244",
+        "startstr": "Sun Jul 27 18:14:04 2025",
+        "version": "7.97",
+        "xmloutputversion": "1.05"
+    },
+    "task_results": [
+        {
+            "task": "Parallel DNS resolution of 1 host.",
+            "time": "1753665246"
+        },
+        {
+            "task": "Ping Scan",
+            "time": "1753665246",
+            "extrainfo": "1 total hosts"
+        },
+        {
+            "task": "Parallel DNS resolution of 1 host.",
+            "time": "1753665248"
+        },
+        {
+            "task": "SYN Stealth Scan",
+            "time": "1753665249",
+            "extrainfo": "7 total ports"
+        },
+        {
+            "task": "Service scan",
+            "time": "1753665255",
+            "extrainfo": "1 service on 1 host"
+        },
+        {
+            "task": "NSE",
+            "time": "1753665255"
+        },
+        {
+            "task": "NSE",
+            "time": "1753665255"
+        }
+    ]
+}
