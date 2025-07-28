@@ -3,7 +3,7 @@ import re
 import json
 
 
-"""        Takes the address and performs a scan for open ports on it then constructing Gobuster-compatible URLs         """
+""" Takes the address and performs a scan for open ports on it then constructing Gobuster-compatible URLs """
 
 def perform_scan(address):
     PORTS_TO_SCAN = [80, 443, 8080, 8443, 8000, 8888, 5000]
