@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/ExternalTools/sqlmap/data/procs/mssqlserver/activate_sp_oacreate.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/ExternalTools/sqlmap/data/procs/mssqlserver/configure_openrowset.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/ExternalTools/sqlmap/data/procs/mssqlserver/configure_xp_cmdshell.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/ExternalTools/sqlmap/data/procs/mssqlserver/create_new_xp_cmdshell.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/ExternalTools/sqlmap/data/procs/mssqlserver/disable_xp_cmdshell_2000.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/ExternalTools/sqlmap/data/procs/mssqlserver/dns_request.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/ExternalTools/sqlmap/data/procs/mssqlserver/enable_xp_cmdshell_2000.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/ExternalTools/sqlmap/data/procs/mssqlserver/run_statement_as_user.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/ExternalTools/sqlmap/data/procs/mysql/dns_request.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/ExternalTools/sqlmap/data/procs/mysql/write_file_limit.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/ExternalTools/sqlmap/data/procs/oracle/dns_request.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/ExternalTools/sqlmap/data/procs/oracle/read_file_export_extension.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/ExternalTools/sqlmap/data/procs/postgresql/dns_request.sql" dialect="GenericSQL" />
+  </component>
+</project>
