@@ -1,14 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-import subprocess
-urls = [
-    'http://testphp.vulnweb.com/login.php',
-]
+from tqdm import tqdm
+
 types = ['text', 'password', 'email', 'search', 'url', 'tel', 'number', 'hidden', 'date', 'datetime-local', 'month', 'week', 'time']
 
 def fetch_forms_inputs(target_url):
     inputs_info = []
+    print("Starting Inputs Scanner..")
     try:
         response = requests.get(target_url)
         response.raise_for_status()
@@ -40,17 +39,3 @@ def fetch_forms_inputs(target_url):
         print(f"Error fetching the URL: {e}")
         return []
 
-for url in urls:
-    forms_data = fetch_forms_inputs(url)
-
-    for form in forms_data:
-        data_payload = "&".join(f"{param}=1" for param in form['params'])
-        if form['method'] == 'get':
-            print(f"sqlmap -u '{form['url']}?{data_payload}'")
-        else:
-            print(f"sqlmap -u '{form['url']}' --data='{data_payload}'")
-
-#
-result = subprocess.run(["python", "../ExternalTools/sqlmap/sqlmap.py -h"], capture_output=True, text=True)
-#
-print(result.stdout)
