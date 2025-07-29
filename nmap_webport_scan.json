@@ -126,51 +126,51 @@
         }
     },
     "runtime": {
-        "time": "1753738465",
-        "timestr": "Mon Jul 28 14:34:25 2025",
-        "summary": "Nmap done at Mon Jul 28 14:34:25 2025; 1 IP address (1 host up) scanned in 7.16 seconds",
-        "elapsed": "7.16",
+        "time": "1753826401",
+        "timestr": "Tue Jul 29 15:00:01 2025",
+        "summary": "Nmap done at Tue Jul 29 15:00:01 2025; 1 IP address (1 host up) scanned in 7.12 seconds",
+        "elapsed": "7.12",
         "exit": "success"
     },
     "stats": {
         "scanner": "nmap",
         "args": "/opt/homebrew/bin/nmap -v -oX - -p 80,443,8080,8443,8000,8888,5000 -sV scanme.org",
-        "start": "1753738458",
-        "startstr": "Mon Jul 28 14:34:18 2025",
+        "start": "1753826394",
+        "startstr": "Tue Jul 29 14:59:54 2025",
         "version": "7.97",
         "xmloutputversion": "1.05"
     },
     "task_results": [
         {
             "task": "Parallel DNS resolution of 1 host.",
-            "time": "1753738458"
+            "time": "1753826394"
         },
         {
             "task": "Ping Scan",
-            "time": "1753738458",
+            "time": "1753826394",
             "extrainfo": "1 total hosts"
         },
         {
             "task": "Parallel DNS resolution of 1 host.",
-            "time": "1753738458"
+            "time": "1753826394"
         },
         {
             "task": "Connect Scan",
-            "time": "1753738458",
+            "time": "1753826395",
             "extrainfo": "7 total ports"
         },
         {
             "task": "Service scan",
-            "time": "1753738465",
+            "time": "1753826401",
             "extrainfo": "1 service on 1 host"
         },
         {
             "task": "NSE",
-            "time": "1753738465"
+            "time": "1753826401"
         },
         {
             "task": "NSE",
-            "time": "1753738465"
+            "time": "1753826401"
         }
     ]
 }
