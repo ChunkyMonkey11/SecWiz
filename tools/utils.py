@@ -1,4 +1,12 @@
+"""
+utils.py contains all utilities used in main script.
+
+Functions written here should be functions that serve a quick purpose such as checks or validation. 
+"""
+
 import re
+
+
 # Function to validate ip address
 def is_valid_ipv4(address):
     pattern = r"^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$"

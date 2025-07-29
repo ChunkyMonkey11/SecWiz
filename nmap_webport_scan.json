@@ -7,7 +7,7 @@
                 "portid": "80",
                 "state": "open",
                 "reason": "syn-ack",
-                "reason_ttl": "52",
+                "reason_ttl": "0",
                 "service": {
                     "name": "http",
                     "product": "Apache httpd",
@@ -26,8 +26,8 @@
             {
                 "protocol": "tcp",
                 "portid": "443",
-                "state": "filtered",
-                "reason": "no-response",
+                "state": "closed",
+                "reason": "conn-refused",
                 "reason_ttl": "0",
                 "service": {
                     "name": "https",
@@ -41,8 +41,8 @@
                 "protocol": "tcp",
                 "portid": "5000",
                 "state": "closed",
-                "reason": "reset",
-                "reason_ttl": "52",
+                "reason": "conn-refused",
+                "reason_ttl": "0",
                 "service": {
                     "name": "upnp",
                     "method": "table",
@@ -55,8 +55,8 @@
                 "protocol": "tcp",
                 "portid": "8000",
                 "state": "closed",
-                "reason": "reset",
-                "reason_ttl": "52",
+                "reason": "conn-refused",
+                "reason_ttl": "0",
                 "service": {
                     "name": "http-alt",
                     "method": "table",
@@ -69,8 +69,8 @@
                 "protocol": "tcp",
                 "portid": "8080",
                 "state": "closed",
-                "reason": "reset",
-                "reason_ttl": "52",
+                "reason": "conn-refused",
+                "reason_ttl": "0",
                 "service": {
                     "name": "http-proxy",
                     "method": "table",
@@ -83,8 +83,8 @@
                 "protocol": "tcp",
                 "portid": "8443",
                 "state": "closed",
-                "reason": "reset",
-                "reason_ttl": "52",
+                "reason": "conn-refused",
+                "reason_ttl": "0",
                 "service": {
                     "name": "https-alt",
                     "method": "table",
@@ -97,8 +97,8 @@
                 "protocol": "tcp",
                 "portid": "8888",
                 "state": "closed",
-                "reason": "reset",
-                "reason_ttl": "52",
+                "reason": "conn-refused",
+                "reason_ttl": "0",
                 "service": {
                     "name": "sun-answerbook",
                     "method": "table",
@@ -121,56 +121,56 @@
         "macaddress": null,
         "state": {
             "state": "up",
-            "reason": "echo-reply",
-            "reason_ttl": "52"
+            "reason": "syn-ack",
+            "reason_ttl": "0"
         }
     },
     "runtime": {
-        "time": "1753665255",
-        "timestr": "Sun Jul 27 18:14:15 2025",
-        "summary": "Nmap done at Sun Jul 27 18:14:15 2025; 1 IP address (1 host up) scanned in 11.21 seconds",
-        "elapsed": "11.21",
+        "time": "1753738465",
+        "timestr": "Mon Jul 28 14:34:25 2025",
+        "summary": "Nmap done at Mon Jul 28 14:34:25 2025; 1 IP address (1 host up) scanned in 7.16 seconds",
+        "elapsed": "7.16",
         "exit": "success"
     },
     "stats": {
         "scanner": "nmap",
-        "args": "\"C:/Program Files (x86)/Nmap/nmap.exe\" -v -oX - -p 80,443,8080,8443,8000,8888,5000 -sV scanme.org",
-        "start": "1753665244",
-        "startstr": "Sun Jul 27 18:14:04 2025",
+        "args": "/opt/homebrew/bin/nmap -v -oX - -p 80,443,8080,8443,8000,8888,5000 -sV scanme.org",
+        "start": "1753738458",
+        "startstr": "Mon Jul 28 14:34:18 2025",
         "version": "7.97",
         "xmloutputversion": "1.05"
     },
     "task_results": [
         {
             "task": "Parallel DNS resolution of 1 host.",
-            "time": "1753665246"
+            "time": "1753738458"
         },
         {
             "task": "Ping Scan",
-            "time": "1753665246",
+            "time": "1753738458",
             "extrainfo": "1 total hosts"
         },
         {
             "task": "Parallel DNS resolution of 1 host.",
-            "time": "1753665248"
+            "time": "1753738458"
         },
         {
-            "task": "SYN Stealth Scan",
-            "time": "1753665249",
+            "task": "Connect Scan",
+            "time": "1753738458",
             "extrainfo": "7 total ports"
         },
         {
             "task": "Service scan",
-            "time": "1753665255",
+            "time": "1753738465",
             "extrainfo": "1 service on 1 host"
         },
         {
             "task": "NSE",
-            "time": "1753665255"
+            "time": "1753738465"
         },
         {
             "task": "NSE",
-            "time": "1753665255"
+            "time": "1753738465"
         }
     ]
 }
