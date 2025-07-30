@@ -4,7 +4,7 @@ import subprocess
 
 
 urls = ['http://testphp.vulnweb.com/login.php']
-path = "../ExternalTools/sqlmap/sqlmap.py"
+path = "ExternalTools/sqlmap/sqlmap.py"
 output_file = "sqlmap_output.txt"
 
 def summarize_sqlmap_output(output):

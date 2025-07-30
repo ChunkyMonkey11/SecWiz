@@ -1,5 +1,5 @@
 {
-    "45.33.32.156": {
+    "44.228.249.3": {
         "osmatch": {},
         "ports": [
             {
@@ -10,15 +10,14 @@
                 "reason_ttl": "0",
                 "service": {
                     "name": "http",
-                    "product": "Apache httpd",
-                    "version": "2.4.7",
-                    "extrainfo": "(Ubuntu)",
+                    "product": "nginx",
+                    "version": "1.19.0",
                     "method": "probed",
                     "conf": "10"
                 },
                 "cpe": [
                     {
-                        "cpe": "cpe:/a:apache:http_server:2.4.7"
+                        "cpe": "cpe:/a:igor_sysoev:nginx:1.19.0"
                     }
                 ],
                 "scripts": []
@@ -26,8 +25,8 @@
             {
                 "protocol": "tcp",
                 "portid": "443",
-                "state": "closed",
-                "reason": "conn-refused",
+                "state": "filtered",
+                "reason": "no-response",
                 "reason_ttl": "0",
                 "service": {
                     "name": "https",
@@ -40,8 +39,8 @@
             {
                 "protocol": "tcp",
                 "portid": "5000",
-                "state": "closed",
-                "reason": "conn-refused",
+                "state": "filtered",
+                "reason": "no-response",
                 "reason_ttl": "0",
                 "service": {
                     "name": "upnp",
@@ -54,8 +53,8 @@
             {
                 "protocol": "tcp",
                 "portid": "8000",
-                "state": "closed",
-                "reason": "conn-refused",
+                "state": "filtered",
+                "reason": "no-response",
                 "reason_ttl": "0",
                 "service": {
                     "name": "http-alt",
@@ -68,8 +67,8 @@
             {
                 "protocol": "tcp",
                 "portid": "8080",
-                "state": "closed",
-                "reason": "conn-refused",
+                "state": "filtered",
+                "reason": "no-response",
                 "reason_ttl": "0",
                 "service": {
                     "name": "http-proxy",
@@ -82,8 +81,8 @@
             {
                 "protocol": "tcp",
                 "portid": "8443",
-                "state": "closed",
-                "reason": "conn-refused",
+                "state": "filtered",
+                "reason": "no-response",
                 "reason_ttl": "0",
                 "service": {
                     "name": "https-alt",
@@ -96,8 +95,8 @@
             {
                 "protocol": "tcp",
                 "portid": "8888",
-                "state": "closed",
-                "reason": "conn-refused",
+                "state": "filtered",
+                "reason": "no-response",
                 "reason_ttl": "0",
                 "service": {
                     "name": "sun-answerbook",
@@ -110,11 +109,11 @@
         ],
         "hostname": [
             {
-                "name": "scanme.org",
+                "name": "testphp.vulnweb.com",
                 "type": "user"
             },
             {
-                "name": "scanme.nmap.org",
+                "name": "ec2-44-228-249-3.us-west-2.compute.amazonaws.com",
                 "type": "PTR"
             }
         ],
@@ -126,51 +125,51 @@
         }
     },
     "runtime": {
-        "time": "1753826401",
-        "timestr": "Tue Jul 29 15:00:01 2025",
-        "summary": "Nmap done at Tue Jul 29 15:00:01 2025; 1 IP address (1 host up) scanned in 7.12 seconds",
-        "elapsed": "7.12",
+        "time": "1753913306",
+        "timestr": "Wed Jul 30 15:08:26 2025",
+        "summary": "Nmap done at Wed Jul 30 15:08:26 2025; 1 IP address (1 host up) scanned in 14.76 seconds",
+        "elapsed": "14.76",
         "exit": "success"
     },
     "stats": {
         "scanner": "nmap",
-        "args": "/opt/homebrew/bin/nmap -v -oX - -p 80,443,8080,8443,8000,8888,5000 -sV scanme.org",
-        "start": "1753826394",
-        "startstr": "Tue Jul 29 14:59:54 2025",
+        "args": "/opt/homebrew/bin/nmap -v -oX - -p 80,443,8080,8443,8000,8888,5000 -sV testphp.vulnweb.com",
+        "start": "1753913291",
+        "startstr": "Wed Jul 30 15:08:11 2025",
         "version": "7.97",
         "xmloutputversion": "1.05"
     },
     "task_results": [
         {
             "task": "Parallel DNS resolution of 1 host.",
-            "time": "1753826394"
+            "time": "1753913291"
         },
         {
             "task": "Ping Scan",
-            "time": "1753826394",
+            "time": "1753913292",
             "extrainfo": "1 total hosts"
         },
         {
             "task": "Parallel DNS resolution of 1 host.",
-            "time": "1753826394"
+            "time": "1753913292"
         },
         {
             "task": "Connect Scan",
-            "time": "1753826395",
+            "time": "1753913293",
             "extrainfo": "7 total ports"
         },
         {
             "task": "Service scan",
-            "time": "1753826401",
+            "time": "1753913305",
             "extrainfo": "1 service on 1 host"
         },
         {
             "task": "NSE",
-            "time": "1753826401"
+            "time": "1753913305"
         },
         {
             "task": "NSE",
-            "time": "1753826401"
+            "time": "1753913306"
         }
     ]
 }

@@ -26,3 +26,21 @@ def is_valid_hostname(hostname):
     valid = re.compile(r"^(?!-)[A-Za-z0-9-]{1,63}(?<!-)$")
     
     return all(valid.match(label) for label in labels)
+
+def extract_status_urls(gobuster_output: str, base_url: str) -> list[str]:
+    """
+    Extracts URLs from Gobuster output with status 200 or 301.
+    If a redirect is found, it returns the full redirect URL.
+    Otherwise, it builds the full path using the base_url.
+    """
+    urls = []
+    for line in gobuster_output.splitlines():
+        if "Status: 301" in line or "Status: 200" in line:
+            match = re.search(r'\[--> (https?://[^\]]+)\]', line)
+            if match:
+             urls.append(match.group(1))  # redirected URL like https://...
+            else:
+                path_match = re.match(r'^(/\S+)', line)
+                if path_match:
+                    urls.append(base_url.rstrip("/") + path_match.group(1))
+            return urls
