@@ -1,0 +1,7 @@
+(Temp file)
+This file explain how the tool should be installed
+
+install go
+install gobuster
+install libs
+run secWiz.py -u https://example.com
