@@ -2,6 +2,7 @@
 
 import subprocess
 from tools.utils import extract_status_urls
+from config.config import wordList
 
 def run_gobuster_scan(urls_for_go_buster):
     """
@@ -14,7 +15,7 @@ def run_gobuster_scan(urls_for_go_buster):
         print(f"\n🚀 Running Gobuster for: {target_url}")
         
         p1 = subprocess.run(
-            ["gobuster", "dir", "-u", target_url, "-w", "wordlist.txt"],
+            ["gobuster", "dir", "-u", target_url, "-w", wordList],
             shell=False,
             capture_output=True,
             text=True
