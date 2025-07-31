@@ -1,9 +1,0 @@
-index
-categories
-artists
-login
-register
-cart 
-guestbook
-admin
-cart

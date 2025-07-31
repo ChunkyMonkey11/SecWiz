@@ -1,0 +1,9 @@
+index
+categories.php
+artists.php
+login.php
+register.php
+cart.php
+guestbook
+admin
+cart
