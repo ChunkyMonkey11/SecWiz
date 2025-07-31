@@ -1,11 +1,14 @@
 from parmScanner import fetch_forms_inputs
 import re
 import subprocess
+import os
+from config.config import sqlMap, sqlMapOutPut
+
 
 
 urls = ['http://testphp.vulnweb.com/login.php']
-path = "ExternalTools/sqlmap/sqlmap.py"
-output_file = "sqlmap_output.txt"
+path = sqlMap
+output_file = sqlMapOutPut
 
 def summarize_sqlmap_output(output):
     results = []
@@ -89,7 +92,7 @@ def sqlScanner(urls):
                     "--data", data_payload
                 ]
             try:
-                with open("sqlmap_output.txt", "a", encoding="utf-8") as f:
+                with open(output_file, "a", encoding="utf-8") as f:
                     process = subprocess.Popen(
                         sqlmap_command,
                         stdout=subprocess.PIPE,
@@ -100,10 +103,11 @@ def sqlScanner(urls):
                         print(line, end="")  # Show in terminal
                         f.write(line)  # Save to file
                     process.wait()
+                    with open(output_file, "r", encoding="utf-8") as f:
+                        output = f.read()
+                    summarize_sqlmap_output(output)
             except Exception as e:
                 print(f"[!] Error running sqlmap: {e}")
 
+
 sqlScanner(urls)
-with open(output_file, "r", encoding="utf-8") as f:
-    output = f.read()
-summarize_sqlmap_output(output)
