@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-from tqdm import tqdm
+
 
 types = ['text', 'password', 'email', 'search', 'url', 'tel', 'number', 'hidden', 'date', 'datetime-local', 'month', 'week', 'time']
 
