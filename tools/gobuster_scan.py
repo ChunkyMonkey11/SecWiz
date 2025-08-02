@@ -22,8 +22,6 @@ def run_gobuster_scan(urls_for_go_buster):
             capture_output=True,
             text=True
         )
-
-
         if p1.returncode == 0:
             print("✅ Gobuster scan successful.")
 
@@ -43,5 +41,6 @@ def run_gobuster_scan(urls_for_go_buster):
     # Write all extracted URLs to file
     if succesful_urls:
         print(f"THESE ARE THE URLS TO SCAN {succesful_urls}")
+
         print("RUNNING SQL SCANNER")
         sqlScanner(succesful_urls)
