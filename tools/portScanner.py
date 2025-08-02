@@ -14,7 +14,7 @@ def scan_ports(target):
         if result == 0:
             print(f"Port {port} is open")
         sock.close()
-s
+
 
 
 
