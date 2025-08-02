@@ -1,5 +1,5 @@
 {
-    "44.228.249.3": {
+    "44.238.29.244": {
         "osmatch": {},
         "ports": [
             {
@@ -10,14 +10,18 @@
                 "reason_ttl": "0",
                 "service": {
                     "name": "http",
-                    "product": "nginx",
-                    "version": "1.19.0",
+                    "product": "Microsoft IIS httpd",
+                    "version": "8.5",
+                    "ostype": "Windows",
                     "method": "probed",
                     "conf": "10"
                 },
                 "cpe": [
                     {
-                        "cpe": "cpe:/a:igor_sysoev:nginx:1.19.0"
+                        "cpe": "cpe:/a:microsoft:internet_information_services:8.5"
+                    },
+                    {
+                        "cpe": "cpe:/o:microsoft:windows"
                     }
                 ],
                 "scripts": []
@@ -109,11 +113,11 @@
         ],
         "hostname": [
             {
-                "name": "testphp.vulnweb.com",
+                "name": "testasp.vulnweb.com",
                 "type": "user"
             },
             {
-                "name": "ec2-44-228-249-3.us-west-2.compute.amazonaws.com",
+                "name": "ec2-44-238-29-244.us-west-2.compute.amazonaws.com",
                 "type": "PTR"
             }
         ],
@@ -125,51 +129,51 @@
         }
     },
     "runtime": {
-        "time": "1753913306",
-        "timestr": "Wed Jul 30 15:08:26 2025",
-        "summary": "Nmap done at Wed Jul 30 15:08:26 2025; 1 IP address (1 host up) scanned in 14.76 seconds",
-        "elapsed": "14.76",
+        "time": "1754092444",
+        "timestr": "Fri Aug  1 16:54:04 2025",
+        "summary": "Nmap done at Fri Aug  1 16:54:04 2025; 1 IP address (1 host up) scanned in 8.86 seconds",
+        "elapsed": "8.86",
         "exit": "success"
     },
     "stats": {
         "scanner": "nmap",
-        "args": "/opt/homebrew/bin/nmap -v -oX - -p 80,443,8080,8443,8000,8888,5000 -sV testphp.vulnweb.com",
-        "start": "1753913291",
-        "startstr": "Wed Jul 30 15:08:11 2025",
+        "args": "/opt/homebrew/bin/nmap -v -oX - -p 80,443,8080,8443,8000,8888,5000 -sV testasp.vulnweb.com",
+        "start": "1754092435",
+        "startstr": "Fri Aug  1 16:53:55 2025",
         "version": "7.97",
         "xmloutputversion": "1.05"
     },
     "task_results": [
         {
             "task": "Parallel DNS resolution of 1 host.",
-            "time": "1753913291"
+            "time": "1754092436"
         },
         {
             "task": "Ping Scan",
-            "time": "1753913292",
+            "time": "1754092436",
             "extrainfo": "1 total hosts"
         },
         {
             "task": "Parallel DNS resolution of 1 host.",
-            "time": "1753913292"
+            "time": "1754092436"
         },
         {
             "task": "Connect Scan",
-            "time": "1753913293",
+            "time": "1754092438",
             "extrainfo": "7 total ports"
         },
         {
             "task": "Service scan",
-            "time": "1753913305",
+            "time": "1754092444",
             "extrainfo": "1 service on 1 host"
         },
         {
             "task": "NSE",
-            "time": "1753913305"
+            "time": "1754092444"
         },
         {
             "task": "NSE",
-            "time": "1753913306"
+            "time": "1754092444"
         }
     ]
 }

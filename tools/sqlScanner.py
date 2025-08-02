@@ -1,4 +1,4 @@
-from parmScanner import fetch_forms_inputs
+from tools.parmScanner import fetch_forms_inputs
 import re
 import subprocess
 import os
@@ -71,6 +71,8 @@ def summarize_sqlmap_output(output):
         for inj in result["Injections"]:
             print(f"\033[96m  • {inj['Type']} - {inj['Title']}\033[0m")
             print(f"\033[92m    Payload: {inj['Payload']}\033[0m\n")
+
+
 def sqlScanner(urls):
     for url in urls:
         forms_data = fetch_forms_inputs(url)
@@ -108,6 +110,3 @@ def sqlScanner(urls):
                     summarize_sqlmap_output(output)
             except Exception as e:
                 print(f"[!] Error running sqlmap: {e}")
-
-
-sqlScanner(urls)
