@@ -38,9 +38,12 @@ def scan_ports(target):
     print(f"Scanning ports http/s service on: {target}")
     target_url = []
     open_ports = []
+    secured = None
     if target.__contains__('https://'):
+        secured = True
         target = target.replace('https://', '')
     elif target.__contains__('http://'):
+        secured = False
         target = target.replace('http://', '')
     if check_protocol(target):
         for port in ports:
@@ -52,8 +55,12 @@ def scan_ports(target):
                 open_ports.append(port)
             sock.close()
     if len(open_ports) >= 1:
-        target_url.append(target)
-        run_gobuster_scan(target_url)
+        if secured:
+            target_url.append(f"https://{target}")
+            run_gobuster_scan(target_url)
+        else:
+            target_url.append(f"http://{target}")
+            run_gobuster_scan(target_url)
     else:
         print("No ports open, please try another domain.")
 

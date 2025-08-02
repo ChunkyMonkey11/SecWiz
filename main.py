@@ -1,5 +1,4 @@
 from tools.portScanner import scan_ports
-from tools.gobuster_scan import run_gobuster_scan
 
 addr_to_scan = input("Please enter a hostname or an IP to scan: ").strip()
 
