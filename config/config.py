@@ -12,3 +12,6 @@ sqlMap =os.path.abspath(os.path.join(externalTools, 'sqlmap/sqlmap.py'))
 #Resources
 sqlMapOutPut =os.path.abspath(os.path.join(resourcesDir, 'sqlmap_output.txt'))
 wordList =os.path.abspath(os.path.join(resourcesDir, 'wordlist.txt'))
+
+#PortScanner
+ports = [80, 443, 8080, 8443, 8000, 8888, 5000]
