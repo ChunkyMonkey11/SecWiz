@@ -10,7 +10,6 @@ def run_gobuster_scan(urls_for_go_buster):
     Extracts all results with status code 200 or 301 and writes only valid URLs to a file.
     """
     all_matching_urls = []
-    #
     for target_url in urls_for_go_buster:
         print(f"\n🚀 Running Gobuster for: {target_url}")
         
