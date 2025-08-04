@@ -64,3 +64,4 @@ def scan_ports(target):
     else:
         print("No ports open, please try another domain.")
 
+# Test comment
