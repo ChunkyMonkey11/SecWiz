@@ -1,9 +1,9 @@
 index
+signup.php
 categories.php
 artists.php
 login.php
 register.php
 cart.php
-guestbook
-admin
-cart
+admin.php
+cart.php

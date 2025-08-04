@@ -1,5 +1,5 @@
 import socket
-from config.config import ports
+from config.config import PORTS
 import ipaddress
 import requests
 from tools.gobuster_scan import run_gobuster_scan
@@ -46,7 +46,7 @@ def scan_ports(target):
         secured = False
         target = target.replace('http://', '')
     if check_protocol(target):
-        for port in ports:
+        for port in PORTS:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(1)
             result = sock.connect_ex((target, port))
