@@ -59,7 +59,10 @@ def scan_ports(target, isGUI):
             sock.close()
     if len(open_ports) >= 1:
             if isGUI:
-                target_url.append(target)
+                if secured:
+                    target_url.append(f"https://{target}")
+                else:
+                    target_url.append(f"http://{target}")
                 return {
                     "open_ports": open_ports,
                     "services": services,
