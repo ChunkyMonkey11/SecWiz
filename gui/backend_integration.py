@@ -13,13 +13,12 @@ from typing import Dict, List, Any, Callable, Optional
 from datetime import datetime
 
 # Import existing tools
-from tools.portScanner import is_ip_address, check_protocol
+from tools.portScanner import is_ip_address, check_protocol, scan_ports
 from tools.gobuster_scan import run_gobuster_scan
 from tools.sqlScanner import sqlScanner, summarize_sqlmap_output
 from tools.parmScanner import fetch_forms_inputs
 from tools.utils import extract_status_urls
 from config.config import ports, wordList, sqlMap, sqlMapOutPut
-
 
 class SecWizBackendIntegration:
     """Backend integration class for SecWiz GUI"""
@@ -57,7 +56,7 @@ class SecWizBackendIntegration:
         try:
             # Step 1: Port Scanning
             self.update_progress("🔍 Step 1/4: Port Scanning...", 1, 4)
-            port_results = self._run_port_scan(target)
+            port_results = scan_ports(target, True)
             results['ports'] = port_results
             results['logs'].append(f"Port scan completed: {len(port_results.get('open_ports', []))} open ports found")
             
@@ -109,8 +108,8 @@ class SecWizBackendIntegration:
         
         try:
             self.update_progress("🔍 Port scanning in progress...")
-            port_results = self._run_port_scan(target)
-            
+            port_results = scan_ports(target, True)
+            print(port_results)
             results['all_ports'] = {
                 'scanned_ports': ports,
                 'open_ports': port_results.get('open_ports', []),
@@ -171,51 +170,6 @@ class SecWizBackendIntegration:
             
         return results
         
-    def _run_port_scan(self, target: str) -> Dict[str, Any]:
-        """Internal port scanning logic"""
-        if is_ip_address(target):
-            raise ValueError("Please enter a valid domain (example.com)")
-            
-        print(f"Scanning ports on: {target}")
-        target_urls = []
-        open_ports = []
-        services = {}
-        
-        # Determine protocol
-        secured = None
-        if 'https://' in target:
-            secured = True
-            target = target.replace('https://', '')
-        elif 'http://' in target:
-            secured = False
-            target = target.replace('http://', '')
-            
-        if not check_protocol(target):
-            raise ValueError("Target is not accessible")
-            
-        # Scan ports
-        for port in ports:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(1)
-            result = sock.connect_ex((target, port))
-            if result == 0:
-                print(f"Port {port} is open")
-                open_ports.append(port)
-                services[port] = self._detect_service(port)
-            sock.close()
-            
-        # Prepare target URLs for further scanning
-        if open_ports:
-            if secured:
-                target_urls.append(f"https://{target}")
-            else:
-                target_urls.append(f"http://{target}")
-                
-        return {
-            'open_ports': open_ports,
-            'services': services,
-            'target_urls': target_urls
-        }
         
     def _run_directory_scan(self, target_urls: List[str]) -> Dict[str, Any]:
         """Internal directory scanning logic"""

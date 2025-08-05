@@ -459,6 +459,7 @@ class SecWizGUI:
     def select_scan_type(self, scan_type):
         """Select scan type"""
         self.scan_type.set(scan_type)
+        print(f"📋 Scan type changed to: {scan_type.upper()}")
         
         # Update button states
         for key, btn in self.scan_buttons.items():
@@ -608,7 +609,7 @@ class SecWizGUI:
         self.results_btn.configure(state="normal")
         self.report_btn.configure(state="normal")
         
-    def update_status(self, message, color=COLORS["success"]):
+    def update_status(self, message, step=None, total_steps=None, color=COLORS["success"]):
         """Update status"""
         self.status_var.set(message)
         self.status_label.configure(text_color=color)

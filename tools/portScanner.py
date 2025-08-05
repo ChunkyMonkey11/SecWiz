@@ -29,12 +29,10 @@ def check_protocol(url_without_scheme):
         pass
 
     return None
-
 def checkServices(port:int):
     common_services = {21:"FTP", 80: "HTTP", 443: "HTTPS"}
     return common_services.get(port,"unknown")
-
-def scan_ports(target, isFull=False):
+def scan_ports(target, isGUI):
     if is_ip_address(target):
         print("Please Enter a valid Domain (example.com).")
         return
@@ -50,7 +48,7 @@ def scan_ports(target, isFull=False):
         secured = False
         target = target.replace('http://', '')
     if check_protocol(target):
-        for port in ports:
+        for port in ports :
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(1)
             result = sock.connect_ex((target, port))
@@ -60,19 +58,22 @@ def scan_ports(target, isFull=False):
                 services[port] = checkServices(port)
             sock.close()
     if len(open_ports) >= 1:
-        if isFull:
+            if isGUI:
+                if secured:
+                    target_url.append(f"https://{target}")
+                else:
+                    target_url.append(f"http://{target}")
+                return {
+                    "open_ports": open_ports,
+                    "services": services,
+                    "target_urls": target_url,
+                }
             if secured:
                 target_url.append(f"https://{target}")
                 run_gobuster_scan(target_url)
             else:
                 target_url.append(f"http://{target}")
                 run_gobuster_scan(target_url)
-        else:
-            target_url.append(target)
-            return {
-                "open_ports": open_ports,
-                "services": services,
-                "target_urls": target_url,
-            }
+
     else:
         print("No ports open, please try another domain.")
