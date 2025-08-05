@@ -30,8 +30,11 @@ def check_protocol(url_without_scheme):
 
     return None
 
+def checkServices(port:int):
+    common_services = {21:"FTP", 80: "HTTP", 443: "HTTPS"}
+    return common_services.get(port,"unknown")
 
-def scan_ports(target):
+def scan_ports(target, isFull=False):
     if is_ip_address(target):
         print("Please Enter a valid Domain (example.com).")
         return
