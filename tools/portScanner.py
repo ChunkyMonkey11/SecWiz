@@ -58,22 +58,22 @@ def scan_ports(target, isGUI):
                 services[port] = checkServices(port)
             sock.close()
     if len(open_ports) >= 1:
-            if isGUI:
-                if secured:
-                    target_url.append(f"https://{target}")
-                else:
-                    target_url.append(f"http://{target}")
-                return {
-                    "open_ports": open_ports,
-                    "services": services,
-                    "target_urls": target_url,
-                }
+        if isGUI:
             if secured:
                 target_url.append(f"https://{target}")
-                run_gobuster_scan(target_url)
             else:
                 target_url.append(f"http://{target}")
-                run_gobuster_scan(target_url)
+            return {
+                "open_ports": open_ports,
+                "services": services,
+                "target_urls": target_url,
+            }
+        if secured:
+            target_url.append(f"https://{target}")
+            run_gobuster_scan(target_url)
+        else:
+            target_url.append(f"http://{target}")
+            run_gobuster_scan(target_url)
 
     else:
         print("No ports open, please try another domain.")
