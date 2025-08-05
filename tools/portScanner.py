@@ -32,7 +32,7 @@ def check_protocol(url_without_scheme):
 def checkServices(port:int):
     common_services = {21:"FTP", 80: "HTTP", 443: "HTTPS"}
     return common_services.get(port,"unknown")
-def scan_ports(target, isFull):
+def scan_ports(target, isGUI):
     if is_ip_address(target):
         print("Please Enter a valid Domain (example.com).")
         return
@@ -58,20 +58,20 @@ def scan_ports(target, isFull):
                 services[port] = checkServices(port)
             sock.close()
     if len(open_ports) >= 1:
-        if isFull:
+            if isGUI:
+                target_url.append(target)
+                return {
+                    "open_ports": open_ports,
+                    "services": services,
+                    "target_urls": target_url,
+                }
             if secured:
                 target_url.append(f"https://{target}")
                 run_gobuster_scan(target_url)
             else:
                 target_url.append(f"http://{target}")
                 run_gobuster_scan(target_url)
-        else:
-            target_url.append(target)
-            return {
-                "open_ports": open_ports,
-                "services": services,
-                "target_urls": target_url,
-            }
+
     else:
         print("No ports open, please try another domain.")
 
