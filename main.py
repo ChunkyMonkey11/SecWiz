@@ -1,7 +1,14 @@
-from tools.portScanner import scan_ports
+"""
+SecWiz - Professional Security Scanner
+Main entry point for the application
+"""
 
-addr_to_scan = input("Please enter a hostname or an IP to scan: ").strip()
+from gui.gui import SecWizGUI
 
-# testphp.vulnweb.com
+def main():
+    """Main entry point"""
+    app = SecWizGUI()
+    app.run()
 
-scan_ports(addr_to_scan)
+if __name__ == "__main__":
+    main()

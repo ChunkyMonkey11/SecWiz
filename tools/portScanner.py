@@ -63,5 +63,3 @@ def scan_ports(target):
             run_gobuster_scan(target_url)
     else:
         print("No ports open, please try another domain.")
-
-# Test comment

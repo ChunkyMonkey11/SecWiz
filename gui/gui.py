@@ -20,6 +20,9 @@ from datetime import datetime
 from PIL import Image, ImageTk
 import json
 
+# Import backend integration
+from .backend_integration import SecWizBackendIntegration
+
 # Configure CustomTkinter
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("dark-blue")
@@ -82,6 +85,12 @@ class SecWizGUI:
         
         # Load assets
         self.load_assets()
+        
+        # Initialize backend integration
+        self.backend = SecWizBackendIntegration(
+            progress_callback=self.update_status,
+            result_callback=self.update_scan_results
+        )
         
         # Setup UI
         self.setup_ui()
@@ -499,6 +508,7 @@ class SecWizGUI:
     def start_scan(self):
         """Start scan"""
         target = self.target_entry.get().strip()
+        scan_type = self.scan_type.get()
         
         if not target:
             messagebox.showerror("Error", "Please enter a target domain")
@@ -507,7 +517,18 @@ class SecWizGUI:
         if self.scan_running:
             messagebox.showwarning("Warning", "Scan already in progress")
             return
-            
+        
+        # Print scan information to console
+        scan_type_display = {
+            "full": "Full Scan",
+            "port": "Port Scan", 
+            "directory": "Directory Scan"
+        }.get(scan_type, scan_type.title())
+        
+        print(f"\n{'='*60}")
+        print(f"🚀 Start Scan: {{ Scan Type: {scan_type_display}, Target: {target} }}")
+        print(f"{'='*60}")
+        
         self.scan_running = True
         self.update_status("🔄 Scanning in progress...", COLORS["warning"])
         
@@ -539,79 +560,48 @@ class SecWizGUI:
             self.scan_complete()
             
     def run_full_scan(self, target):
-        """Run full scan"""
-        self.update_status("🔍 Step 1/4: Port Scanning...", COLORS["warning"])
-        # TODO: Call your port scanner
-        # from tools.portScanner import scan_ports
-        # scan_ports(target)
-        
-        self.update_status("📁 Step 2/4: Directory Enumeration...", COLORS["warning"])
-        # TODO: Call your gobuster scanner
-        # from tools.gobuster_scan import run_gobuster_scan
-        # run_gobuster_scan([f"http://{target}"])
-        
-        self.update_status("📝 Step 3/4: Form Input Extraction...", COLORS["warning"])
-        # TODO: Call your parameter scanner
-        # from tools.parmScanner import fetch_forms_inputs
-        # forms = fetch_forms_inputs(f"http://{target}/login.php")
-        
-        self.update_status("🗄️ Step 4/4: SQL Injection Testing...", COLORS["warning"])
-        # TODO: Call your SQL scanner
-        # from tools.sqlScanner import sqlScanner
-        # sqlScanner([f"http://{target}/login.php"])
-        
-        # Store results
-        self.scan_results = {
-            'type': 'full',
-            'target': target,
-            'timestamp': datetime.now().isoformat(),
-            'results': f"Full scan completed for {target}"
-        }
-        
-        self.update_status("✅ Full scan completed successfully!", COLORS["success"])
+        """Run full scan using backend integration"""
+        print(f"🔍 Starting Full Scan for target: {target}")
+        try:
+            results = self.backend.run_full_scan(target)
+            self.scan_results = results
+            print(f"✅ Full Scan completed for target: {target}")
+        except Exception as e:
+            print(f"❌ Full Scan failed for target {target}: {str(e)}")
+            self.update_status(f"❌ Error: {str(e)}", COLORS["error"])
         
     def run_port_scan(self, target):
-        """Run port scan"""
-        self.update_status("🔍 Port scanning in progress...", COLORS["warning"])
-        
-        # TODO: Call your port scanner
-        # from tools.portScanner import scan_ports
-        # scan_ports(target)
-        
-        self.scan_results = {
-            'type': 'port',
-            'target': target,
-            'timestamp': datetime.now().isoformat(),
-            'results': f"Port scan completed for {target}"
-        }
-        
-        self.update_status("✅ Port scan completed successfully!", COLORS["success"])
+        """Run port scan using backend integration"""
+        print(f"🔍 Starting Port Scan for target: {target}")
+        try:
+            results = self.backend.run_port_scan(target)
+            self.scan_results = results
+            print(f"✅ Port Scan completed for target: {target}")
+        except Exception as e:
+            print(f"❌ Port Scan failed for target {target}: {str(e)}")
+            self.update_status(f"❌ Error: {str(e)}", COLORS["error"])
         
     def run_gobuster_scan(self, target):
-        """Run gobuster scan"""
-        self.update_status("📁 Directory scanning in progress...", COLORS["warning"])
-        
-        # TODO: Call your gobuster scanner
-        # from tools.gobuster_scan import run_gobuster_scan
-        # run_gobuster_scan([f"http://{target}"])
-        
-        self.scan_results = {
-            'type': 'gobuster',
-            'target': target,
-            'timestamp': datetime.now().isoformat(),
-            'results': f"Directory scan completed for {target}"
-        }
-        
-        self.update_status("✅ Directory scan completed successfully!", COLORS["success"])
+        """Run directory scan using backend integration"""
+        print(f"🔍 Starting Directory Scan for target: {target}")
+        try:
+            results = self.backend.run_directory_scan(target)
+            self.scan_results = results
+            print(f"✅ Directory Scan completed for target: {target}")
+        except Exception as e:
+            print(f"❌ Directory Scan failed for target {target}: {str(e)}")
+            self.update_status(f"❌ Error: {str(e)}", COLORS["error"])
         
     def stop_scan(self):
         """Stop scan"""
+        print(f"⏹️ Scan stopped by user")
         self.scan_running = False
         self.update_status("⏹️ Scan stopped by user", COLORS["error"])
         self.scan_complete()
         
     def scan_complete(self):
         """Handle scan completion"""
+        print(f"🏁 Scan process completed")
         self.scan_running = False
         self.start_btn.configure(state="normal")
         self.stop_btn.configure(state="disabled")
@@ -622,6 +612,21 @@ class SecWizGUI:
         """Update status"""
         self.status_var.set(message)
         self.status_label.configure(text_color=color)
+        
+    def update_scan_results(self, scan_type, results):
+        """Update scan results in GUI"""
+        self.scan_results = results
+        # Update the current tab content
+        current_tab = self.get_current_active_tab()
+        if current_tab:
+            self.show_tab(current_tab)
+            
+    def get_current_active_tab(self):
+        """Get the currently active tab"""
+        for tab_id, btn in self.tab_buttons.items():
+            if btn.cget("fg_color") == COLORS["primary"]:
+                return tab_id
+        return None
         
     def show_tab(self, tab_id):
         """Show specific tab content"""
@@ -649,27 +654,30 @@ class SecWizGUI:
             self.content_text.insert("0.0", content)
         
     def get_tab_content(self, scan_type, tab_id):
-        """Get content for specific tab based on scan type"""
+        """Get content for specific tab based on scan type and results"""
+        if not self.scan_results:
+            return "No scan results available yet."
+        
         if scan_type == "full":
             content_map = {
-                "overview": "Full Scan Overview\n\nComplete vulnerability assessment results will be displayed here.",
-                "ports": "Port Scan Results\n\nOpen ports and services will be listed here.",
-                "directories": "Directory Enumeration Results\n\nDiscovered directories and files will be shown here.",
-                "vulnerabilities": "Vulnerability Assessment Results\n\nIdentified security vulnerabilities will be displayed here.",
-                "logs": "Full Scan Logs\n\nDetailed scan logs and execution history."
+                "overview": self._format_overview_content(),
+                "ports": self._format_ports_content(),
+                "directories": self._format_directories_content(),
+                "vulnerabilities": self._format_vulnerabilities_content(),
+                "logs": self._format_logs_content()
             }
         elif scan_type == "port":
             content_map = {
-                "all_ports": "All Ports Scan Results\n\nComplete port scan results including open and closed ports.",
-                "open_ports_services": "Open Ports & Services Results\n\nOpen ports with their running services and applications detected.",
-                "logs": "Port Scan Logs\n\nDetailed port scanning logs and execution history."
+                "all_ports": self._format_all_ports_content(),
+                "open_ports_services": self._format_open_ports_services_content(),
+                "logs": self._format_logs_content()
             }
         elif scan_type == "directory":
             content_map = {
-                "all_files": "All Files Discovered\n\nComplete list of all files and directories found.",
-                "accessible_files": "Accessible Files\n\nFiles that are publicly accessible and readable.",
-                "protected_files": "Protected Files\n\nFiles that require authentication or are restricted.",
-                "logs": "Directory Scan Logs\n\nDetailed directory enumeration logs and execution history."
+                "all_files": self._format_all_files_content(),
+                "accessible_files": self._format_accessible_files_content(),
+                "protected_files": self._format_protected_files_content(),
+                "logs": self._format_logs_content()
             }
         else:
             content_map = {
@@ -678,6 +686,231 @@ class SecWizGUI:
             }
         
         return content_map.get(tab_id, f"Content for {tab_id} not available")
+        
+    def _format_overview_content(self):
+        """Format overview content"""
+        if not self.scan_results:
+            return "No scan results available."
+        
+        results = self.scan_results
+        content = f"""
+╔══════════════════════════════════════════════════════════════╗
+║                    SCAN OVERVIEW                             ║
+╚══════════════════════════════════════════════════════════════╝
+
+Target: {results.get('target', 'Unknown')}
+Scan Type: {results.get('type', 'Unknown').upper()} SCAN
+Timestamp: {results.get('timestamp', 'Unknown')}
+
+SUMMARY:
+• Open Ports: {len(results.get('ports', {}).get('open_ports', []))}
+• Accessible URLs: {len(results.get('directories', {}).get('accessible_urls', []))}
+• Forms Found: {len(results.get('vulnerabilities', {}).get('forms', []))}
+• SQL Vulnerabilities: {len(results.get('vulnerabilities', {}).get('sql_injection', {}).get('vulnerabilities', []))}
+
+{'='*60}
+"""
+        return content
+        
+    def _format_ports_content(self):
+        """Format ports content"""
+        if not self.scan_results:
+            return "No port scan results available."
+        
+        results = self.scan_results
+        ports_data = results.get('ports', {})
+        open_ports = ports_data.get('open_ports', [])
+        services = ports_data.get('services', {})
+        
+        content = f"""
+╔══════════════════════════════════════════════════════════════╗
+║                    PORT SCAN RESULTS                         ║
+╚══════════════════════════════════════════════════════════════╝
+
+Open Ports Found: {len(open_ports)}
+
+"""
+        for port in open_ports:
+            service = services.get(port, "Unknown")
+            content += f"• Port {port}: {service}\n"
+            
+        return content
+        
+    def _format_directories_content(self):
+        """Format directories content"""
+        if not self.scan_results:
+            return "No directory scan results available."
+        
+        results = self.scan_results
+        dirs_data = results.get('directories', {})
+        accessible_urls = dirs_data.get('accessible_urls', [])
+        
+        content = f"""
+╔══════════════════════════════════════════════════════════════╗
+║                DIRECTORY ENUMERATION RESULTS                 ║
+╚══════════════════════════════════════════════════════════════╝
+
+Accessible URLs Found: {len(accessible_urls)}
+
+"""
+        for url in accessible_urls:
+            content += f"• {url}\n"
+            
+        return content
+        
+    def _format_vulnerabilities_content(self):
+        """Format vulnerabilities content"""
+        if not self.scan_results:
+            return "No vulnerability scan results available."
+        
+        results = self.scan_results
+        vulns_data = results.get('vulnerabilities', {})
+        forms = vulns_data.get('forms', [])
+        sql_vulns = vulns_data.get('sql_injection', {}).get('vulnerabilities', [])
+        
+        content = f"""
+╔══════════════════════════════════════════════════════════════╗
+║                VULNERABILITY ASSESSMENT RESULTS              ║
+╚══════════════════════════════════════════════════════════════╝
+
+Forms Found: {len(forms)}
+SQL Injection Vulnerabilities: {len(sql_vulns)}
+
+"""
+        return content
+        
+    def _format_logs_content(self):
+        """Format logs content"""
+        if not self.scan_results:
+            return "No scan logs available."
+        
+        results = self.scan_results
+        logs = results.get('logs', [])
+        
+        content = f"""
+╔══════════════════════════════════════════════════════════════╗
+║                        SCAN LOGS                             ║
+╚══════════════════════════════════════════════════════════════╝
+
+"""
+        for log in logs:
+            content += f"• {log}\n"
+            
+        return content
+        
+    def _format_all_ports_content(self):
+        """Format all ports content"""
+        if not self.scan_results:
+            return "No port scan results available."
+        
+        results = self.scan_results
+        all_ports_data = results.get('all_ports', {})
+        scanned_ports = all_ports_data.get('scanned_ports', [])
+        open_ports = all_ports_data.get('open_ports', [])
+        closed_ports = all_ports_data.get('closed_ports', [])
+        
+        content = f"""
+╔══════════════════════════════════════════════════════════════╗
+║                    ALL PORTS SCAN RESULTS                    ║
+╚══════════════════════════════════════════════════════════════╝
+
+Total Ports Scanned: {len(scanned_ports)}
+Open Ports: {len(open_ports)}
+Closed Ports: {len(closed_ports)}
+
+OPEN PORTS:
+"""
+        for port in open_ports:
+            content += f"• Port {port}\n"
+            
+        return content
+        
+    def _format_open_ports_services_content(self):
+        """Format open ports and services content"""
+        if not self.scan_results:
+            return "No port scan results available."
+        
+        results = self.scan_results
+        ports_services_data = results.get('open_ports_services', {})
+        open_ports = ports_services_data.get('open_ports', [])
+        services = ports_services_data.get('services', {})
+        
+        content = f"""
+╔══════════════════════════════════════════════════════════════╗
+║                OPEN PORTS & SERVICES                         ║
+╚══════════════════════════════════════════════════════════════╝
+
+Open Ports with Services: {len(open_ports)}
+
+"""
+        for port in open_ports:
+            service = services.get(port, "Unknown")
+            content += f"• Port {port}: {service}\n"
+            
+        return content
+        
+    def _format_all_files_content(self):
+        """Format all files content"""
+        if not self.scan_results:
+            return "No directory scan results available."
+        
+        results = self.scan_results
+        all_files = results.get('all_files', [])
+        
+        content = f"""
+╔══════════════════════════════════════════════════════════════╗
+║                    ALL FILES DISCOVERED                      ║
+╚══════════════════════════════════════════════════════════════╝
+
+Total Files Found: {len(all_files)}
+
+"""
+        for file in all_files:
+            content += f"• {file}\n"
+            
+        return content
+        
+    def _format_accessible_files_content(self):
+        """Format accessible files content"""
+        if not self.scan_results:
+            return "No directory scan results available."
+        
+        results = self.scan_results
+        accessible_files = results.get('accessible_files', [])
+        
+        content = f"""
+╔══════════════════════════════════════════════════════════════╗
+║                    ACCESSIBLE FILES                          ║
+╚══════════════════════════════════════════════════════════════╝
+
+Accessible Files: {len(accessible_files)}
+
+"""
+        for file in accessible_files:
+            content += f"• {file}\n"
+            
+        return content
+        
+    def _format_protected_files_content(self):
+        """Format protected files content"""
+        if not self.scan_results:
+            return "No directory scan results available."
+        
+        results = self.scan_results
+        protected_files = results.get('protected_files', [])
+        
+        content = f"""
+╔══════════════════════════════════════════════════════════════╗
+║                    PROTECTED FILES                           ║
+╚══════════════════════════════════════════════════════════════╝
+
+Protected Files: {len(protected_files)}
+
+"""
+        for file in protected_files:
+            content += f"• {file}\n"
+            
+        return content
         
     def view_results(self):
         """View results"""
