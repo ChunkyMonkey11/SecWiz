@@ -42,6 +42,7 @@ class SecWizBackendIntegration:
     def run_full_scan(self, target: str) -> Dict[str, Any]:
         """Run complete vulnerability assessment"""
         self.is_scanning = True
+        
         results = {
             'type': 'full',
             'target': target,
@@ -57,19 +58,23 @@ class SecWizBackendIntegration:
             # Step 1: Port Scanning
             self.update_progress("🔍 Step 1/4: Port Scanning...", 1, 4)
             port_results = scan_ports(target, True)
+            # run_gobuster_scan(port_results.get('target_urls'))
             results['ports'] = port_results
             results['logs'].append(f"Port scan completed: {len(port_results.get('open_ports', []))} open ports found")
             
             # Step 2: Directory Enumeration
             self.update_progress("📁 Step 2/4: Directory Enumeration...", 2, 4)
             if port_results.get('target_urls'):
-                dir_results = self._run_directory_scan(port_results['target_urls'])
+                dir_results = self._run_directory_scan(
+                    
+                )
                 results['directories'] = dir_results
                 results['logs'].append(f"Directory scan completed: {len(dir_results.get('accessible_urls', []))} accessible URLs found")
             
             # Step 3: Form Input Extraction
             self.update_progress("📝 Step 3/4: Form Input Extraction...", 3, 4)
-            form_results = self._run_form_scan(target)
+            print(f"TARGET : {target}")
+            form_results = fetch_forms_inputs(target)
             results['vulnerabilities']['forms'] = form_results
             results['logs'].append(f"Form scan completed: {len(form_results)} forms found")
             
@@ -151,7 +156,7 @@ class SecWizBackendIntegration:
             self.update_progress("📁 Directory scanning in progress...")
             
             # First get target URLs from port scan
-            port_results = self._run_port_scan(target)
+            port_results = self._run_port_scan(target,)
             dir_results = self._run_directory_scan(port_results.get('target_urls', []))
             
             results['all_files'] = dir_results.get('all_urls', [])
@@ -233,15 +238,7 @@ class SecWizBackendIntegration:
                 'scanned_urls': accessible_urls
             }
         
-    def _detect_service(self, port: int) -> str:
-        """Basic service detection"""
-        common_services = {
-            21: "FTP", 22: "SSH", 23: "Telnet", 25: "SMTP",
-            53: "DNS", 80: "HTTP", 443: "HTTPS", 3306: "MySQL",
-            5432: "PostgreSQL", 8080: "HTTP-Alt"
-        }
-        return common_services.get(port, "Unknown")
-        
+  
     def _create_overview(self, results: Dict[str, Any]) -> Dict[str, Any]:
         """Create overview summary"""
         return {
