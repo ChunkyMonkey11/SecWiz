@@ -55,38 +55,39 @@ class SecWizBackendIntegration:
         }
         
         try:
-            # Step 1: Port Scanning
-            self.update_progress("🔍 Step 1/4: Port Scanning...", 1, 4)
+            # STEP 1: Port Scanning WORKS WITH TOOLS FOLDER
             port_results = scan_ports(target, True)
-            # run_gobuster_scan(port_results.get('target_urls'))
             results['ports'] = port_results
-            results['logs'].append(f"Port scan completed: {len(port_results.get('open_ports', []))} open ports found")
+            results['logs'].append(f"Empty Log after Port Scanning ")
+
+            """========================================================"""
+
+
+            # STEP 2: Directory Enumeration WORKS WITH TOOLS FOLDER
+            target_urls = port_results.get('target_urls')
+            print(f"DEBUG TARGET_URLS : {target_urls}") #Debug statement
+            dir_results = run_gobuster_scan(target_urls, isGUI=True) # How can this call urls and work. 
+            results['directories'] = dir_results
+            results['logs'].append(f"Empty Log after Directory Enumeration ")
+            """ Uses run_gobuster_scan  WORKING"""
+            print(f" DEBUG THIS IS WHAT GETS PASSED INTO SQLSCAN,\n {results['directories']['accessible_urls']}")
+
+            "============================================================="
             
-            # Step 2: Directory Enumeration
-            self.update_progress("📁 Step 2/4: Directory Enumeration...", 2, 4)
-            if port_results.get('target_urls'):
-                dir_results = self._run_directory_scan(
-                    
-                )
-                results['directories'] = dir_results
-                results['logs'].append(f"Directory scan completed: {len(dir_results.get('accessible_urls', []))} accessible URLs found")
-            
-            # Step 3: Form Input Extraction
-            self.update_progress("📝 Step 3/4: Form Input Extraction...", 3, 4)
-            print(f"TARGET : {target}")
-            form_results = fetch_forms_inputs(target)
-            results['vulnerabilities']['forms'] = form_results
-            results['logs'].append(f"Form scan completed: {len(form_results)} forms found")
-            
-            # Step 4: SQL Injection Testing
+
+
+            # Step 3: SQL Injection Testing DOES NOT WORK WITH TOOLS
             self.update_progress("🗄️ Step 4/4: SQL Injection Testing...", 4, 4)
-            if results['directories'].get('accessible_urls'):
-                sql_results = self._run_sql_scan(results['directories']['accessible_urls'])
-                results['vulnerabilities']['sql_injection'] = sql_results
-                results['logs'].append(f"SQL scan completed: {len(sql_results.get('vulnerabilities', []))} vulnerabilities found")
+            accessible_urls_to_sql_scan = results['directories'].get('accessible_urls')
+            if accessible_urls_to_sql_scan:
+                sql_scan_results = sqlScanner(accessible_urls_to_sql_scan, True)
+                
+                results['vulnerabilities']['sql_injection'] = sql_scan_results
             
+                results['logs'].append(f"Empty Log after SQL SCAN")
             # Create overview
-            results['overview'] = self._create_overview(results)
+            print(f"Will now be adding to results[overview] CURRENT results[overview] = = = = {results['overview']}")
+            results['overview'] = self._create_overview(results) 
             
             self.update_progress("✅ Full scan completed successfully!", 4, 4)
             
@@ -97,8 +98,38 @@ class SecWizBackendIntegration:
         finally:
             self.is_scanning = False
             
+            print(f"RESULTS IS {results}") 
         return results
-        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def run_port_scan(self, target: str) -> Dict[str, Any]:
         """Run port scan only"""
         self.is_scanning = True
@@ -175,15 +206,15 @@ class SecWizBackendIntegration:
             
         return results
         
-        
+    # Reached nepo 
     def _run_directory_scan(self, target_urls: List[str]) -> Dict[str, Any]:
         """Internal directory scanning logic"""
         accessible_urls = []
         all_urls = []
         
         for target_url in target_urls:
-            print(f"Running Gobuster for: {target_url}")
-            
+            print(f"\n🚀 Running Gobuster for: {target_url}")
+
             try:
                 p1 = subprocess.run(
                     ["gobuster", "dir", "-u", target_url, "-w", wordList],
@@ -215,7 +246,9 @@ class SecWizBackendIntegration:
         except Exception as e:
             print(f"Error in form scan: {e}")
             return []
-            
+
+
+
     def _run_sql_scan(self, accessible_urls: List[str]) -> Dict[str, Any]:
         """Internal SQL injection scanning logic"""
         vulnerabilities = []
@@ -238,9 +271,25 @@ class SecWizBackendIntegration:
                 'scanned_urls': accessible_urls
             }
         
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def _create_overview(self, results: Dict[str, Any]) -> Dict[str, Any]:
         """Create overview summary"""
+        print("_create_overview() has been called")
         return {
             'total_open_ports': len(results.get('ports', {}).get('open_ports', [])),
             'total_accessible_urls': len(results.get('directories', {}).get('accessible_urls', [])),

@@ -655,10 +655,12 @@ class SecWizGUI:
             self.content_text.insert("0.0", content)
         
     def get_tab_content(self, scan_type, tab_id):
-        """Get content for specific tab based on scan type and results"""
-        if not self.scan_results:
+        """Get content for specific tab based on scan type and results
+        Defensive: Ensure scan_results is a dict, not a list, to prevent AttributeError.
+        """
+        if not self.scan_results or not isinstance(self.scan_results, dict):
             return "No scan results available yet."
-        
+
         if scan_type == "full":
             content_map = {
                 "overview": self._format_overview_content(),
@@ -685,34 +687,38 @@ class SecWizGUI:
                 "overview": "Scan Overview\n\nNo scan results available yet.",
                 "logs": "Scan Logs\n\nNo scan logs available yet."
             }
-        
+
         return content_map.get(tab_id, f"Content for {tab_id} not available")
         
     def _format_overview_content(self):
-        """Format overview content"""
-        if not self.scan_results:
+        """Format overview content
+        Defensive: Ensure scan_results is a dict, not a list, to prevent AttributeError.
+        """
+        if not self.scan_results or not isinstance(self.scan_results, dict):
             return "No scan results available."
-        
+
         results = self.scan_results
-        content = f"""
-╔══════════════════════════════════════════════════════════════╗
-║                    SCAN OVERVIEW                             ║
-╚══════════════════════════════════════════════════════════════╝
+        try:
+            content = f"""
+                        ╔══════════════════════════════════════════════════════════════╗
+                        ║                    SCAN OVERVIEW                             ║
+                        ╚══════════════════════════════════════════════════════════════╝
 
-Target: {results.get('target', 'Unknown')}
-Scan Type: {results.get('type', 'Unknown').upper()} SCAN
-Timestamp: {results.get('timestamp', 'Unknown')}
+                        Target: {results.get('target', 'Unknown')}
+                        Scan Type: {results.get('type', 'Unknown').upper()} SCAN
+                        Timestamp: {results.get('timestamp', 'Unknown')}
 
-SUMMARY:
-• Open Ports: {len(results.get('ports', {}).get('open_ports', []))}
-• Accessible URLs: {len(results.get('directories', {}).get('accessible_urls', []))}
-• Forms Found: {len(results.get('vulnerabilities', {}).get('forms', []))}
-• SQL Vulnerabilities: {len(results.get('vulnerabilities', {}).get('sql_injection', {}).get('vulnerabilities', []))}
+                        SUMMARY:
+                        • Open Ports: {len(results.get('ports', {}).get('open_ports', []))}
+                        • Accessible URLs: {len(results.get('directories', {}).get('accessible_urls', []))}
+                        • Forms Found: {len(results.get('vulnerabilities', {}).get('forms', []))}
+                        • SQL Vulnerabilities: {len(results.get('vulnerabilities', {}).get('sql_injection', {}).get('vulnerabilities', {}))} #DEBUG THIS  
 
-{'='*60}
-"""
-        return content
-        
+                        {'='*60}`
+                    """
+            return content
+        except Exception as e:
+            print(f"Line 721 Fails in gui.py ERROR IS {e}")
     def _format_ports_content(self):
         """Format ports content"""
         if not self.scan_results:
