@@ -1,0 +1,129 @@
+# Port Scanning Improvements Guide
+
+## Current Limitations in [tools/portScanner.py](mdc:tools/portScanner.py)
+
+### Basic Return Structure
+Current returns are minimal:
+```python
+{
+    "open_ports": [80, 443],
+    "services": {80: "HTTP", 443: "HTTPS"},
+    "target_urls": ["http://example.com"]
+}
+```
+
+### Missing Features
+1. **No Service Version Detection** - Only basic service names
+2. **No Banner Grabbing** - No HTTP headers or service banners
+3. **No Security Headers Analysis** - Missing HSTS, CSP, etc.
+4. **No SSL/TLS Information** - No certificate details
+5. **No Response Analysis** - No status codes or error analysis
+6. **Limited Service Mapping** - Only 3 ports mapped (21, 80, 443)
+
+## Enhanced Return Structure (Recommended)
+
+### Comprehensive Port Data
+```python
+{
+    "open_ports": [80, 443, 8080],
+    "services": {
+        80: {
+            "name": "HTTP",
+            "product": "Apache/2.4.41",
+            "version": "2.4.41",
+            "ostype": "Linux",
+            "headers": {
+                "Server": "Apache/2.4.41 (Ubuntu)",
+                "X-Powered-By": "PHP/7.4.3",
+                "Content-Type": "text/html"
+            },
+            "security_headers": {
+                "X-Frame-Options": "DENY",
+                "X-Content-Type-Options": "nosniff",
+                "Strict-Transport-Security": "max-age=31536000"
+            },
+            "response_time": 0.045,
+            "status_codes": [200, 404, 500],
+            "redirects": ["http://example.com -> https://example.com"]
+        }
+    },
+    "ssl_info": {
+        443: {
+            "certificate": {
+                "subject": "CN=example.com",
+                "issuer": "Let's Encrypt",
+                "valid_from": "2024-01-01",
+                "valid_until": "2024-04-01"
+            },
+            "cipher_suites": ["TLS_AES_256_GCM_SHA384"],
+            "security_score": "A",
+            "weak_ciphers": []
+        }
+    },
+    "target_urls": ["http://example.com", "https://example.com"],
+    "risk_assessment": {
+        "high_risk_ports": [21, 23, 3306],
+        "exposed_services": ["FTP", "Telnet"],
+        "security_issues": [
+            "Missing HSTS header on port 80",
+            "Weak cipher suite detected"
+        ],
+        "recommendations": [
+            "Enable HTTPS redirect",
+            "Add security headers",
+            "Disable unnecessary services"
+        ]
+    }
+}
+```
+
+## Implementation Recommendations
+
+### 1. Enhanced Service Detection
+- Use requests library for HTTP banner grabbing
+- Implement timeout handling
+- Capture full HTTP response headers
+- Analyze security headers
+
+### 2. SSL/TLS Analysis
+- Use ssl library for certificate inspection
+- Check cipher suite strength
+- Validate certificate chain
+- Test for common vulnerabilities
+
+### 3. Risk Assessment
+- Define risk levels for different ports
+- Identify exposed sensitive services
+- Provide actionable recommendations
+- Calculate overall security score
+
+### 4. Better Logging
+- Log scan progress with timestamps
+- Include response times and details
+- Provide troubleshooting information
+- Track scan statistics
+
+### 5. Performance Improvements
+- Implement concurrent scanning
+- Use connection pooling
+- Add intelligent timeouts
+- Cache results where appropriate
+
+## Integration with Nmap
+Consider leveraging [tools/nmap_scan.py](mdc:tools/nmap_scan.py) for enhanced scanning:
+- Version detection
+- OS fingerprinting
+- Service enumeration
+- Script output analysis
+
+## GUI Display Enhancements
+Update [gui/gui.py](mdc:gui/gui.py) to show:
+- Service versions and products
+- Security header analysis
+- SSL certificate information
+- Risk assessments and recommendations
+- Interactive drill-down capabilities
+description:
+globs:
+alwaysApply: false
+---

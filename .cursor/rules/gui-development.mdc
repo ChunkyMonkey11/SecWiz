@@ -1,0 +1,64 @@
+# GUI Development Standards
+
+## Color Scheme
+Use the defined color constants from [gui/gui.py](mdc:gui/gui.py):
+```python
+COLORS = {
+    "primary": "#2563eb",      # Blue - main accent
+    "secondary": "#1d4ed8",    # Darker blue - hover states
+    "surface": "#1e293b",      # Dark surface
+    "surface_light": "#334155", # Lighter surface
+    "text": "#f8fafc",         # Light text
+    "text_secondary": "#cbd5e1" # Secondary text
+}
+```
+
+**Important**: Avoid using green accent colors as the user prefers other color schemes.
+
+## GUI Component Patterns
+
+### Progress Updates
+Use the progress callback pattern:
+```python
+def update_progress(self, message: str, step: int = None, total_steps: int = None):
+    if self.progress_callback:
+        self.progress_callback(message, step, total_steps)
+```
+
+### Results Display
+Use the results callback pattern:
+```python
+def update_results(self, scan_type: str, results: Dict[str, Any]):
+    if self.result_callback:
+        self.result_callback(scan_type, results)
+```
+
+### Tab Content Formatting
+Follow the established pattern in [gui/gui.py](mdc:gui/gui.py):
+- Use ASCII box borders for section headers
+- Include clear section titles
+- Provide structured data presentation
+- Handle missing data gracefully
+
+## Backend Integration
+- All GUI interactions should go through [gui/backend_integration.py](mdc:gui/backend_integration.py)
+- Use threading for long-running operations
+- Provide real-time progress updates
+- Handle errors gracefully with user-friendly messages
+
+## UI Layout Standards
+- Use CustomTkinter for consistent theming
+- Implement responsive layouts
+- Provide clear visual hierarchy
+- Use appropriate spacing and padding
+- Include loading indicators for long operations
+
+## Error Handling in GUI
+- Display user-friendly error messages
+- Log technical details for debugging
+- Provide recovery options when possible
+- Don't crash the GUI on tool failures
+description:
+globs:
+alwaysApply: false
+---

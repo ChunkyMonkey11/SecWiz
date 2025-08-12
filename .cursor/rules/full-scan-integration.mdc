@@ -1,0 +1,169 @@
+# Full Scan Integration Guide
+
+## Current Full Scan Workflow in [gui/backend_integration.py](mdc:gui/backend_integration.py)
+
+### Current Process
+1. **Port Scanning** - Basic port detection
+2. **Directory Enumeration** - Gobuster scan on discovered URLs
+3. **SQL Injection Testing** - sqlmap on accessible URLs
+4. **Results Compilation** - Basic overview creation
+
+### Current Limitations
+- **Disconnected Results** - Each step returns separate data structures
+- **No Cross-Reference** - Port results don't inform other scans
+- **Limited Context** - No relationship between findings
+- **Basic Risk Scoring** - Simple count-based assessment
+- **Poor Logging** - Minimal progress and error information
+
+## Enhanced Full Scan Structure (Recommended)
+
+### Comprehensive Results Structure
+```python
+{
+    "overview": {
+        "target": "example.com",
+        "scan_type": "full",
+        "timestamp": "2024-01-01T10:00:00",
+        "scan_duration": "5m 23s",
+        "risk_score": 7.5,
+        "risk_level": "MEDIUM",
+        "critical_findings": 2,
+        "high_findings": 3,
+        "medium_findings": 1,
+        "low_findings": 0,
+        "scan_status": "completed"
+    },
+    "port_analysis": {
+        "open_ports": [...],
+        "services": {...},
+        "ssl_configuration": {...},
+        "security_headers": {...},
+        "exposed_services": [...],
+        "port_risk_assessment": {...}
+    },
+    "directory_enumeration": {
+        "accessible_urls": [...],
+        "protected_urls": [...],
+        "scan_statistics": {...},
+        "interesting_paths": [...],
+        "admin_interfaces": [...]
+    },
+    "vulnerability_assessment": {
+        "sql_injection": {
+            "vulnerabilities": [...],
+            "scanned_forms": [...],
+            "risk_summary": {...}
+        },
+        "xss_vulnerabilities": [...],
+        "csrf_vulnerabilities": [...],
+        "other_vulnerabilities": [...]
+    },
+    "vulnerability_correlation": {
+        "port_80_vulnerabilities": [...],
+        "port_443_vulnerabilities": [...],
+        "cross_port_issues": [...],
+        "attack_paths": [...]
+    },
+    "recommendations": {
+        "critical": [...],
+        "high": [...],
+        "medium": [...],
+        "low": [...],
+        "remediation_steps": [...]
+    },
+    "logs": [
+        {
+            "timestamp": "2024-01-01T10:00:00",
+            "level": "INFO",
+            "step": "port_scan",
+            "message": "Port 80: HTTP service detected",
+            "details": {...}
+        }
+    ]
+}
+```
+
+## Implementation Recommendations
+
+### 1. Enhanced Integration Layer
+Update [gui/backend_integration.py](mdc:gui/backend_integration.py):
+- Implement proper data flow between scan steps
+- Use scan results to inform subsequent scans
+- Provide detailed progress tracking
+- Handle scan failures gracefully
+- Implement scan resumption capabilities
+
+### 2. Cross-Reference Analysis
+- Correlate port findings with vulnerability results
+- Identify attack paths across different scan types
+- Provide context-aware recommendations
+- Calculate risk scores based on multiple factors
+
+### 3. Improved Logging
+- Log each scan step with timestamps
+- Include performance metrics
+- Provide troubleshooting information
+- Track scan statistics and trends
+
+### 4. Risk Assessment Engine
+- Implement weighted risk scoring
+- Consider multiple risk factors
+- Provide actionable recommendations
+- Include industry best practices
+
+### 5. Results Presentation
+Update [gui/gui.py](mdc:gui/gui.py):
+- Show correlated findings
+- Provide drill-down capabilities
+- Include visual risk indicators
+- Offer export functionality
+
+## Scan Orchestration Patterns
+
+### Sequential vs Parallel Scanning
+```python
+# Sequential (current)
+port_results = scan_ports(target)
+dir_results = scan_directories(port_results['target_urls'])
+vuln_results = scan_vulnerabilities(dir_results['accessible_urls'])
+
+# Parallel (recommended)
+with ThreadPoolExecutor() as executor:
+    port_future = executor.submit(scan_ports, target)
+    # Start other scans when dependencies are ready
+```
+
+### Dependency Management
+- Port scan → Directory scan (depends on URLs)
+- Directory scan → Vulnerability scan (depends on accessible URLs)
+- All scans → Correlation analysis (depends on all results)
+
+### Error Recovery
+- Continue scan if individual tools fail
+- Provide partial results
+- Allow manual scan step execution
+- Implement retry mechanisms
+
+## GUI Integration Enhancements
+
+### Real-time Updates
+- Show scan progress in real-time
+- Display current step and estimated completion
+- Provide cancel/stop functionality
+- Show intermediate results
+
+### Results Navigation
+- Tabbed interface for different result types
+- Search and filter capabilities
+- Export options (PDF, JSON, CSV)
+- Historical comparison features
+
+### User Experience
+- Clear progress indicators
+- Meaningful error messages
+- Helpful tooltips and guidance
+- Keyboard shortcuts for power users
+description:
+globs:
+alwaysApply: false
+---

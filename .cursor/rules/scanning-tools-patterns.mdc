@@ -1,0 +1,112 @@
+# Scanning Tools Development Patterns
+
+## Standard Tool Function Pattern
+All scanning tools should follow this pattern:
+```python
+def tool_name(target, isGUI=False):
+    """
+    Tool description
+    
+    Args:
+        target: Target to scan (URL, IP, domain)
+        isGUI: Boolean indicating if called from GUI
+    
+    Returns:
+        dict: Structured results for GUI, or None for CLI
+    """
+    results = {
+        'type': 'tool_name',
+        'target': target,
+        'timestamp': datetime.now().isoformat(),
+        'data': {},
+        'logs': []
+    }
+    
+    try:
+        # Tool logic here
+        if isGUI:
+            return results
+        else:
+            # CLI output
+            print_results(results)
+    except Exception as e:
+        results['logs'].append(f"Error: {str(e)}")
+        if isGUI:
+            return results
+        else:
+            print(f"Error: {e}")
+```
+
+## Return Data Structure Standards
+All tools should return consistent data structures:
+
+### Port Scanning Returns
+```python
+{
+    "open_ports": [80, 443],
+    "services": {
+        80: {
+            "name": "HTTP",
+            "product": "Apache/2.4.41",
+            "version": "2.4.41",
+            "headers": {...},
+            "security_headers": {...},
+            "response_time": 0.045
+        }
+    },
+    "target_urls": ["http://example.com"],
+    "ssl_info": {...},
+    "risk_assessment": {...}
+}
+```
+
+### Directory Scanning Returns
+```python
+{
+    "all_urls": [...],
+    "accessible_urls": [...],
+    "protected_urls": [...],
+    "scan_statistics": {
+        "total_scanned": 1000,
+        "accessible_count": 15,
+        "scan_duration": "2.5s"
+    }
+}
+```
+
+### Vulnerability Scanning Returns
+```python
+{
+    "vulnerabilities": [
+        {
+            "type": "sql_injection",
+            "severity": "HIGH",
+            "url": "http://example.com/login.php",
+            "parameter": "username",
+            "payload": "...",
+            "description": "..."
+        }
+    ],
+    "scan_summary": {
+        "total_vulnerabilities": 3,
+        "high_risk": 1,
+        "medium_risk": 2
+    }
+}
+```
+
+## Error Handling
+- Always use try-catch blocks
+- Log errors in the results['logs'] array
+- Provide meaningful error messages
+- Handle timeouts gracefully
+
+## Logging Standards
+- Use structured logging with timestamps
+- Include relevant details (response times, counts, etc.)
+- Provide progress updates for long-running operations
+- Log both successes and failures
+description:
+globs:
+alwaysApply: false
+---

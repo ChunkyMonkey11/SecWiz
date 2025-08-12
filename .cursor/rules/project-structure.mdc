@@ -1,0 +1,36 @@
+# SecWiz Project Structure Guide
+
+## Main Entry Points
+- [main.py](mdc:main.py) - Main application entry point that launches the GUI
+- [gui/gui.py](mdc:gui/gui.py) - Main GUI implementation using CustomTkinter
+- [gui/backend_integration.py](mdc:gui/backend_integration.py) - Bridge between GUI and scanning tools
+
+## Core Scanning Tools
+- [tools/portScanner.py](mdc:tools/portScanner.py) - Basic port scanning functionality
+- [tools/nmap_scan.py](mdc:tools/nmap_scan.py) - Advanced port scanning using nmap3
+- [tools/gobuster_scan.py](mdc:tools/gobuster_scan.py) - Directory enumeration using Gobuster
+- [tools/sqlScanner.py](mdc:tools/sqlScanner.py) - SQL injection testing using sqlmap
+- [tools/parmScanner.py](mdc:tools/parmScanner.py) - Form parameter extraction
+- [tools/utils.py](mdc:tools/utils.py) - Utility functions for data processing
+
+## Configuration
+- [config/config.py](mdc:config/config.py) - Application configuration including ports, paths, and resources
+- [requirements.txt](mdc:requirements.txt) - Python dependencies
+
+## External Tools
+- [ExternalTools/sqlmap/](mdc:ExternalTools/sqlmap/) - SQLMap integration for SQL injection testing
+
+## Resources
+- [resources/](mdc:resources/) - Wordlists and output files
+- [assets/](mdc:assets/) - GUI assets and images
+
+## Architecture Pattern
+The application follows a layered architecture:
+1. GUI Layer (gui/gui.py) - User interface
+2. Integration Layer (gui/backend_integration.py) - Business logic and scan orchestration
+3. Tool Layer (tools/) - Individual scanning tools
+4. Configuration Layer (config/) - Settings and resources
+description:
+globs:
+alwaysApply: false
+---

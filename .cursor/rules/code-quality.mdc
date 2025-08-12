@@ -1,0 +1,61 @@
+# Code Quality Standards
+
+## Python Coding Standards
+- Follow PEP 8 style guidelines
+- Use type hints where appropriate
+- Include docstrings for all functions and classes
+- Use meaningful variable and function names
+- Keep functions focused and single-purpose
+
+## Error Handling
+- Always use try-catch blocks for external operations
+- Provide meaningful error messages
+- Log errors with context information
+- Handle edge cases gracefully
+- Don't let exceptions crash the application
+
+## Security Considerations
+- Validate all user inputs
+- Sanitize data before processing
+- Use secure defaults for configurations
+- Implement proper timeout handling
+- Avoid hardcoding sensitive information
+
+## Performance Guidelines
+- Use appropriate data structures
+- Implement caching where beneficial
+- Use async/threading for I/O operations
+- Profile code for bottlenecks
+- Optimize database queries and file operations
+
+## Documentation
+- Document complex algorithms
+- Explain business logic
+- Include usage examples
+- Keep README files updated
+- Document configuration options
+
+## Testing
+- Write unit tests for critical functions
+- Test error conditions
+- Mock external dependencies
+- Include integration tests
+- Test both CLI and GUI modes
+
+## File Organization
+- Keep related functionality together
+- Use clear file and directory names
+- Separate concerns (GUI, business logic, tools)
+- Maintain consistent import structure
+- Use __init__.py files appropriately
+
+## Configuration Management
+- Use [config/config.py](mdc:config/config.py) for centralized configuration
+- Make paths relative to project root
+- Use environment variables for sensitive data
+- Provide sensible defaults
+- Document all configuration options
+description:
+globs:
+alwaysApply: false
+---
