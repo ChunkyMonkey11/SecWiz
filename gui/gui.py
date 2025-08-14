@@ -46,8 +46,28 @@ class SecWizGUI:
     def __init__(self):
         self.root = ctk.CTk()
         self.root.title("SecWiz - Professional Security Scanner")
-        self.root.geometry("1400x900")
+        
+        # Get screen dimensions for responsive sizing
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        
+        # Calculate appropriate window size (80% of screen size, with minimum and maximum bounds)
+        window_width = min(max(int(screen_width * 0.8), 1000), 1800)
+        window_height = min(max(int(screen_height * 0.8), 700), 1200)
+        
+        # Center the window on screen
+        x = (screen_width - window_width) // 2
+        y = (screen_height - window_height) // 2
+        
+        self.root.geometry(f"{window_width}x{window_height}+{x}+{y}")
         self.root.configure(fg_color="#0a0a0a")
+        
+        # Set minimum window size to prevent UI from breaking
+        self.root.minsize(1000, 700)
+        
+        # Store dimensions for responsive design
+        self.window_width = window_width
+        self.window_height = window_height
         
         # Variables
         self.scan_type = tk.StringVar(value="full")
@@ -152,6 +172,58 @@ class SecWizGUI:
         # Right panel (Results)
         self.setup_results_panel(content_frame)
         
+        # Bind window resize event for responsive design
+        self.root.bind("<Configure>", self.on_window_resize)
+        
+    def on_window_resize(self, event):
+        """Handle window resize events for responsive design"""
+        # Only handle main window resize events (not child widgets)
+        if event.widget == self.root:
+            # Update stored dimensions
+            self.window_width = event.width
+            self.window_height = event.height
+            
+            # Adjust UI elements based on new size
+            self.adjust_ui_for_size()
+    
+    def adjust_ui_for_size(self):
+        """Adjust UI elements based on current window size"""
+        # Calculate responsive sizes based on window dimensions
+        if hasattr(self, 'window_width') and hasattr(self, 'window_height'):
+            # Check if we're in full screen mode
+            screen_width = self.root.winfo_screenwidth()
+            screen_height = self.root.winfo_screenheight()
+            
+            is_fullscreen = (self.window_width >= screen_width * 0.95 and 
+                           self.window_height >= screen_height * 0.95)
+            
+            # Adjust font sizes based on window size
+            if self.window_width < 1200:
+                # Smaller window - use smaller fonts
+                title_font_size = 24
+                subtitle_font_size = 12
+                button_font_size = 11
+            elif self.window_width < 1600:
+                # Medium window - use medium fonts
+                title_font_size = 28
+                subtitle_font_size = 14
+                button_font_size = 12
+            else:
+                # Large window - use larger fonts
+                title_font_size = 32
+                subtitle_font_size = 16
+                button_font_size = 13
+            
+            # For full screen mode, ensure scan panel is wide enough
+            if is_fullscreen and hasattr(self, 'scan_scrollable_frame'):
+                # Adjust scan panel width for full screen
+                fullscreen_panel_width = min(max(int(self.window_width * 0.4), 500), 700)
+                self.scan_scrollable_frame.configure(width=fullscreen_panel_width - 40)
+            
+            # Update font sizes for existing widgets if they exist
+            # Note: CustomTkinter doesn't support dynamic font size changes easily
+            # This is more of a framework for future responsive adjustments
+        
     def setup_header(self):
         """Setup the header with logo and branding"""
         header_frame = ctk.CTkFrame(self.main_frame, fg_color=COLORS["surface"], height=80)
@@ -227,31 +299,48 @@ class SecWizGUI:
         
     def setup_scan_panel(self, parent):
         """Setup the scan configuration panel"""
+        # Calculate responsive width for scan panel
+        # Make it more compact for full screen to fit all elements
+        if self.window_width >= 1600:
+            # Full screen - use smaller, more compact panel
+            self.scan_panel_width = min(max(int(self.window_width * 0.25), 350), 450)
+        else:
+            # Normal screens - use standard percentage
+            self.scan_panel_width = min(max(int(self.window_width * 0.3), 350), 500)
+        
         # Left panel container
-        scan_frame = ctk.CTkFrame(parent, fg_color=COLORS["surface"], width=400)
-        scan_frame.pack(side="left", fill="y", padx=(0, 20))
+        scan_frame = ctk.CTkFrame(parent, fg_color=COLORS["surface"], width=self.scan_panel_width)
+        scan_frame.pack(side="left", fill="both", padx=(0, 20))
         scan_frame.pack_propagate(False)
+        
+        # Create a scrollable frame for the scan panel content
+        self.scan_scrollable_frame = ctk.CTkScrollableFrame(
+            scan_frame,
+            fg_color="transparent",
+            width=self.scan_panel_width - 30  # Account for reduced padding
+        )
+        self.scan_scrollable_frame.pack(fill="both", expand=True, padx=15, pady=15)
         
         # Panel header
         header_label = ctk.CTkLabel(
-            scan_frame,
+            self.scan_scrollable_frame,
             text="🔍 Scan Configuration",
-            font=ctk.CTkFont(size=18, weight="bold"),
+            font=ctk.CTkFont(size=16, weight="bold"),
             text_color=COLORS["text"]
         )
-        header_label.pack(pady=(20, 30))
+        header_label.pack(pady=(0, 20))
         
         # Scan type selection
-        scan_type_frame = ctk.CTkFrame(scan_frame, fg_color="transparent")
-        scan_type_frame.pack(fill="x", padx=20, pady=(0, 20))
+        scan_type_frame = ctk.CTkFrame(self.scan_scrollable_frame, fg_color="transparent")
+        scan_type_frame.pack(fill="x", pady=(0, 20))
         
         scan_type_label = ctk.CTkLabel(
             scan_type_frame,
             text="Select Scan Type:",
-            font=ctk.CTkFont(size=14, weight="bold"),
+            font=ctk.CTkFont(size=12, weight="bold"),
             text_color=COLORS["text"]
         )
-        scan_type_label.pack(anchor="w", pady=(0, 15))
+        scan_type_label.pack(anchor="w", pady=(0, 10))
         
         # Scan type buttons
         self.scan_buttons = {}
@@ -264,7 +353,11 @@ class SecWizGUI:
         for scan_type, title, desc in scan_types:
             # Create button frame
             button_frame = ctk.CTkFrame(scan_type_frame, fg_color="transparent")
-            button_frame.pack(fill="x", pady=(0, 10))
+            button_frame.pack(fill="x", pady=(0, 8))
+            
+            # Calculate responsive button sizes - make them more compact
+            button_width = min(max(int(self.scan_panel_width * 0.9), 160), 200)
+            button_height = 45
             
             # Use custom image if available
             if scan_type in self.button_images and self.button_images[scan_type]:
@@ -274,8 +367,8 @@ class SecWizGUI:
                     image=self.button_images[scan_type],
                     fg_color="transparent",
                     hover_color=COLORS["primary"],
-                    width=200,
-                    height=60,
+                    width=button_width,
+                    height=button_height,
                     command=lambda t=scan_type: self.select_scan_type(t)
                 )
             else:
@@ -286,8 +379,8 @@ class SecWizGUI:
                     font=ctk.CTkFont(size=12, weight="bold"),
                     fg_color=COLORS["surface_light"],
                     hover_color=COLORS["primary"],
-                    width=200,
-                    height=60,
+                    width=button_width,
+                    height=button_height,
                     command=lambda t=scan_type: self.select_scan_type(t)
                 )
             
@@ -304,28 +397,28 @@ class SecWizGUI:
             desc_label.pack(side="left", padx=(10, 0))
         
         # Target configuration
-        target_frame = ctk.CTkFrame(scan_frame, fg_color="transparent")
-        target_frame.pack(fill="x", padx=20, pady=(20, 0))
+        target_frame = ctk.CTkFrame(self.scan_scrollable_frame, fg_color="transparent")
+        target_frame.pack(fill="x", pady=(15, 0))
         
         target_label = ctk.CTkLabel(
             target_frame,
             text="Target Configuration:",
-            font=ctk.CTkFont(size=14, weight="bold"),
+            font=ctk.CTkFont(size=12, weight="bold"),
             text_color=COLORS["text"]
         )
-        target_label.pack(anchor="w", pady=(0, 10))
+        target_label.pack(anchor="w", pady=(0, 8))
         
         # Target input
         self.target_entry = ctk.CTkEntry(
             target_frame,
             placeholder_text="Enter target domain (e.g., testphp.vulnweb.com)",
-            font=ctk.CTkFont(size=12),
-            height=40,
+            font=ctk.CTkFont(size=11),
+            height=35,
             fg_color=COLORS["surface_light"],
             border_color=COLORS["primary"],
             text_color=COLORS["text"]
         )
-        self.target_entry.pack(fill="x", pady=(0, 10))
+        self.target_entry.pack(fill="x", pady=(0, 8))
         
         # Example label
         example_label = ctk.CTkLabel(
@@ -337,17 +430,17 @@ class SecWizGUI:
         example_label.pack(anchor="w")
         
         # Action buttons
-        action_frame = ctk.CTkFrame(scan_frame, fg_color="transparent")
-        action_frame.pack(fill="x", padx=20, pady=30)
+        action_frame = ctk.CTkFrame(self.scan_scrollable_frame, fg_color="transparent")
+        action_frame.pack(fill="x", pady=20)
         
         # Start button
         self.start_btn = ctk.CTkButton(
             action_frame,
             text="🚀 Start Scan",
-            font=ctk.CTkFont(size=14, weight="bold"),
+            font=ctk.CTkFont(size=12, weight="bold"),
             fg_color=COLORS["primary"],
             hover_color=COLORS["secondary"],
-            height=45,
+            height=40,
             command=self.start_scan
         )
         self.start_btn.pack(fill="x", pady=(0, 10))
@@ -356,10 +449,10 @@ class SecWizGUI:
         self.stop_btn = ctk.CTkButton(
             action_frame,
             text="⏹️ Stop Scan",
-            font=ctk.CTkFont(size=14, weight="bold"),
+            font=ctk.CTkFont(size=12, weight="bold"),
             fg_color=COLORS["error"],
             hover_color="#d32f2f",
-            height=45,
+            height=40,
             command=self.stop_scan,
             state="disabled"
         )
@@ -369,10 +462,10 @@ class SecWizGUI:
         self.results_btn = ctk.CTkButton(
             action_frame,
             text="📊 View Results",
-            font=ctk.CTkFont(size=14, weight="bold"),
+            font=ctk.CTkFont(size=12, weight="bold"),
             fg_color=COLORS["accent"],
             hover_color=COLORS["secondary"],
-            height=45,
+            height=40,
             command=self.view_results,
             state="disabled"
         )
@@ -382,18 +475,18 @@ class SecWizGUI:
         self.report_btn = ctk.CTkButton(
             action_frame,
             text="📄 Generate Report",
-            font=ctk.CTkFont(size=14, weight="bold"),
+            font=ctk.CTkFont(size=12, weight="bold"),
             fg_color=COLORS["warning"],
             hover_color="#F57C00",
-            height=45,
+            height=40,
             command=self.generate_report,
             state="disabled"
         )
-        self.report_btn.pack(fill="x")
+        self.report_btn.pack(fill="x", pady=(0, 10))
         
         # Status
-        status_frame = ctk.CTkFrame(scan_frame, fg_color="transparent")
-        status_frame.pack(fill="x", padx=20, pady=20)
+        status_frame = ctk.CTkFrame(self.scan_scrollable_frame, fg_color="transparent")
+        status_frame.pack(fill="x", pady=15)
         
         self.status_var = tk.StringVar(value="✅ Ready to scan")
         self.status_label = ctk.CTkLabel(
@@ -704,8 +797,11 @@ class SecWizGUI:
             open_ports = ports_data.get('open_ports', [])
             risk_summary = ports_data.get('risk_summary', {})
             
-            directories_data = results.get('directories', {})
-            accessible_urls = directories_data.get('accessible_urls', [])
+            directories_data = results.get('directories')
+            if directories_data is None:
+                accessible_urls = []
+            else:
+                accessible_urls = directories_data.get('accessible_urls', [])
             
             vulnerabilities_data = results.get('vulnerabilities', {})
             forms = vulnerabilities_data.get('forms', [])
@@ -851,7 +947,12 @@ class SecWizGUI:
             return "No directory scan results available."
         
         results = self.scan_results
-        dirs_data = results.get('directories', {})
+        dirs_data = results.get('directories')
+        
+        # Handle None case
+        if dirs_data is None:
+            return "No directory scan results available."
+        
         accessible_urls = dirs_data.get('accessible_urls', [])
         
         content = f"""
@@ -1049,7 +1150,20 @@ Protected Files: {len(protected_files)}
         # Create results window
         results_window = ctk.CTkToplevel(self.root)
         results_window.title("SecWiz Scan Results")
-        results_window.geometry("800x600")
+        
+        # Make results window responsive to screen size
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        
+        # Calculate appropriate size for results window (60% of screen size)
+        results_width = min(max(int(screen_width * 0.6), 600), 1200)
+        results_height = min(max(int(screen_height * 0.6), 400), 800)
+        
+        # Center the results window
+        x = (screen_width - results_width) // 2
+        y = (screen_height - results_height) // 2
+        
+        results_window.geometry(f"{results_width}x{results_height}+{x}+{y}")
         results_window.configure(fg_color=COLORS["surface"])
         
         # Results content

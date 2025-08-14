@@ -1,6 +1,13 @@
-# SecWiz - Professional Security Scanner
-
-A comprehensive web security scanning tool with a modern GUI interface, developed by Revant and Mansour.
+<div align="center">
+  <img src="assets/SecWiz%20Logo.webp" alt="SecWiz Logo" width="200" height="200">
+  <h1>SecWiz - Professional Security Scanner</h1>
+  <p>A comprehensive web security scanning tool with a modern GUI interface, developed by Revant and Mansour.</p>
+  
+  [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
+  [![License](https://img.shields.io/badge/License-Educational-green.svg)](LICENSE)
+  [![Security](https://img.shields.io/badge/Security-Tool-red.svg)](https://github.com/yourusername/SecWiz)
+  [![GUI](https://img.shields.io/badge/GUI-CustomTkinter-purple.svg)](https://github.com/TomSchimansky/CustomTkinter)
+</div>
 
 ## 🚀 Features
 
@@ -18,6 +25,29 @@ A comprehensive web security scanning tool with a modern GUI interface, develope
 - **Real-time Updates**: Live progress and status updates within terminal
 - **Asset Integration**: Custom logos and button images
 
+## 📸 Screenshots
+
+### Main Interface
+![SecWiz Main Interface](screenshots/main-interface.png)
+
+*Professional dark-themed interface with scan configuration panel and results display*
+
+### Port Scan Results
+![Port Scan Results](screenshots/port-scan-results.png)
+
+*Detailed port analysis showing open ports, services, and security assessments*
+
+### Full Scan Overview
+![Full Scan Overview](screenshots/full-scan-overview.png)
+
+*Comprehensive scan results with risk assessment and vulnerability findings*
+
+### Application Features
+- **Responsive Design**: Adapts to different screen sizes and resolutions
+- **Professional UI**: Dark theme with blue accents for optimal visibility
+- **Real-time Updates**: Live progress tracking during scans
+- **Comprehensive Results**: Detailed analysis with risk assessments
+
 ## 📁 Project Structure
 
 ```
@@ -26,7 +56,6 @@ SecWiz/
 │   ├── __init__.py              # Package initialization
 │   ├── gui.py                   # Main GUI interface
 │   ├── backend_integration.py   # Backend integration layer
-│   ├── requirements.txt         # GUI dependencies
 │   └── README.md               # GUI documentation
 ├── tools/                       # Backend scanner tools
 │   ├── portScanner.py          # Port scanning logic
@@ -36,9 +65,28 @@ SecWiz/
 │   └── utils.py                # Utility functions
 ├── config/                      # Configuration files
 ├── assets/                      # GUI assets (logos, buttons)
+├── screenshots/                 # Application screenshots
+├── resources/                   # Scan resources and wordlists
+├── ExternalTools/               # External security tools (sqlmap)
 ├── main.py                     # Application entry point
 ├── requirements.txt             # Project dependencies
-└── test_integration.py         # Integration test suite
+├── test_integration.py         # Integration test suite
+├── LICENSE                     # MIT License
+└── .gitignore                  # Git ignore rules
+```
+
+## 🚀 Quick Start
+
+```bash
+# Clone and setup
+git clone <repository-url>
+cd SecWiz
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+# Run the application
+python main.py
 ```
 
 ## 🛠️ Installation
