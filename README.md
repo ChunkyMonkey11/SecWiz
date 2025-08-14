@@ -28,17 +28,17 @@
 ## 📸 Screenshots
 
 ### Main Interface
-![SecWiz Main Interface](screenshots/Screenshot%202025-08-14%20at%2012.27.16%20PM.png)
+![SecWiz Main Interface](screenshots/main-interface.png)
 
 *Professional dark-themed interface with scan configuration panel and results display*
 
 ### Port Scan Results
-![Port Scan Results](screenshots/Screenshot%202025-08-14%20at%2012.27.50%20PM.png)
+![Port Scan Results](screenshots/port-scan-results.png)
 
 *Detailed port analysis showing open ports, services, and security assessments*
 
 ### Full Scan Overview
-![Full Scan Overview](screenshots/Screenshot%202025-08-14%20at%2012.28.10%20PM.png)
+![Full Scan Overview](screenshots/full-scan-overview.png)
 
 *Comprehensive scan results with risk assessment and vulnerability findings*
 
