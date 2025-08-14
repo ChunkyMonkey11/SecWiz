@@ -1,0 +1,78 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Scan Results and Output
+resources/*.txt
+resources/*.json
+resources/*/
+!resources/wordlist.txt
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# SQLMap session files
+*.session
+
+# Nmap output files
+*.xml
+*.nmap
+
+# Gobuster output
+gobuster-*.txt
+
+# Test files
+test_*.py
+*_test.py
+
+# Configuration files with sensitive data
+config/local_config.py
+.env

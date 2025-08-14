@@ -27,15 +27,19 @@
 
 ## 📸 Screenshots
 
-> **Note**: Screenshots will be added to showcase the application interface. See `screenshots/README.md` for guidelines.
-
 ### Main Interface
+![SecWiz Main Interface](screenshots/Screenshot%202025-08-14%20at%2012.27.16%20PM.png)
+
 *Professional dark-themed interface with scan configuration panel and results display*
 
-### Port Scan Results  
+### Port Scan Results
+![Port Scan Results](screenshots/Screenshot%202025-08-14%20at%2012.27.50%20PM.png)
+
 *Detailed port analysis showing open ports, services, and security assessments*
 
 ### Full Scan Overview
+![Full Scan Overview](screenshots/Screenshot%202025-08-14%20at%2012.28.10%20PM.png)
+
 *Comprehensive scan results with risk assessment and vulnerability findings*
 
 ### Application Features
@@ -52,7 +56,6 @@ SecWiz/
 │   ├── __init__.py              # Package initialization
 │   ├── gui.py                   # Main GUI interface
 │   ├── backend_integration.py   # Backend integration layer
-│   ├── requirements.txt         # GUI dependencies
 │   └── README.md               # GUI documentation
 ├── tools/                       # Backend scanner tools
 │   ├── portScanner.py          # Port scanning logic
@@ -62,9 +65,14 @@ SecWiz/
 │   └── utils.py                # Utility functions
 ├── config/                      # Configuration files
 ├── assets/                      # GUI assets (logos, buttons)
+├── screenshots/                 # Application screenshots
+├── resources/                   # Scan resources and wordlists
+├── ExternalTools/               # External security tools (sqlmap)
 ├── main.py                     # Application entry point
 ├── requirements.txt             # Project dependencies
-└── test_integration.py         # Integration test suite
+├── test_integration.py         # Integration test suite
+├── LICENSE                     # MIT License
+└── .gitignore                  # Git ignore rules
 ```
 
 ## 🚀 Quick Start

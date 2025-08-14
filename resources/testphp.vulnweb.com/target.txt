@@ -1,3 +1,0 @@
-http://testphp.vulnweb.com/search.php?test=query (POST)  # /Users/revantpatel/SecWiz/externalTools/sqlmap/sqlmap.py -u http://testphp.vulnweb.com/search.php?test=query --data searchFor=1 --output-dir /Users/revantpatel/SecWiz/resources --batch --non-interactive --random-agent --time-sec=3 --threads=1 --skip-waf --skip-heuristics --level=1 --risk=1 --technique=BEUSTQ
-
-searchFor=1
