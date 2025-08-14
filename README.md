@@ -12,10 +12,10 @@ A comprehensive web security scanning tool with a modern GUI interface, develope
 - **Full Vulnerability Assessment**: Complete security audit workflow
 
 ### 🎨 Modern GUI Interface
-- **Professional Design**: Dark theme with blue accents, inspired by Burp Suite
+- **Professional Design**: Dark theme with blue accents.
 - **Multi-Panel Layout**: Configuration panel and results display
 - **Dynamic Tabs**: Different result views based on scan type
-- **Real-time Updates**: Live progress and status updates
+- **Real-time Updates**: Live progress and status updates within terminal
 - **Asset Integration**: Custom logos and button images
 
 ## 📁 Project Structure
