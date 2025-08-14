@@ -55,10 +55,16 @@ class SecWizBackendIntegration:
         }
         
         try:
-            # STEP 1: Port Scanning WORKS WITH TOOLS FOLDER
+            # STEP 1: Enhanced Port Scanning
+            self.update_progress("🔍 Step 1/4: Enhanced Port Scanning...", 1, 4)
             port_results = scan_ports(target, True)
             results['ports'] = port_results
-            results['logs'].append(f"Empty Log after Port Scanning ")
+            results['logs'].append(f"Enhanced port scan completed: {len(port_results.get('open_ports', []))} ports analyzed")
+            
+            # Add risk assessment to logs
+            risk_summary = port_results.get('risk_summary', {})
+            if risk_summary:
+                results['logs'].append(f"Risk assessment: {risk_summary.get('critical', 0)} critical, {risk_summary.get('high', 0)} high, {risk_summary.get('medium', 0)} medium, {risk_summary.get('low', 0)} low")
 
             """========================================================"""
 
@@ -76,15 +82,46 @@ class SecWizBackendIntegration:
             
 
 
-            # Step 3: SQL Injection Testing DOES NOT WORK WITH TOOLS
+            # Step 3: Form Detection
+            self.update_progress("📝 Step 3/4: Form Detection...", 3, 4)
+            accessible_urls = results['directories'].get('accessible_urls', [])
+            forms_found = []
+            
+            for url in accessible_urls:
+                try:
+                    forms = fetch_forms_inputs(url)
+                    for form in forms:
+                        form['source_url'] = url
+                        forms_found.append(form)
+                except Exception as e:
+                    results['logs'].append(f"Error detecting forms on {url}: {str(e)}")
+            
+            results['vulnerabilities']['forms'] = forms_found
+            results['logs'].append(f"Form detection completed: {len(forms_found)} forms found across {len(accessible_urls)} URLs")
+
+            # Step 4: SQL Injection Testing
             self.update_progress("🗄️ Step 4/4: SQL Injection Testing...", 4, 4)
             accessible_urls_to_sql_scan = results['directories'].get('accessible_urls')
             if accessible_urls_to_sql_scan:
+                print(f"🔍 Starting SQL injection scan on {len(accessible_urls_to_sql_scan)} URLs")
                 sql_scan_results = sqlScanner(accessible_urls_to_sql_scan, True)
                 
-                results['vulnerabilities']['sql_injection'] = sql_scan_results
-            
-                results['logs'].append(f"Empty Log after SQL SCAN")
+                # Handle new enhanced return structure
+                if isinstance(sql_scan_results, dict):
+                    # New enhanced structure
+                    results['vulnerabilities']['sql_injection'] = sql_scan_results.get('vulnerabilities', [])
+                    results['logs'].extend(sql_scan_results.get('scan_logs', []))
+                    
+                    # Add summary to logs
+                    summary = sql_scan_results.get('summary', {})
+                    if summary:
+                        results['logs'].append(f"SQL injection scan completed: {summary.get('total_vulnerabilities', 0)} vulnerabilities found across {summary.get('total_urls', 0)} URLs")
+                else:
+                    # Legacy structure (list of vulnerabilities)
+                    results['vulnerabilities']['sql_injection'] = sql_scan_results
+                    results['logs'].append(f"SQL injection scan completed: {len(sql_scan_results)} vulnerabilities found")
+            else:
+                results['logs'].append("No accessible URLs found for SQL injection testing")
             # Create overview
             print(f"Will now be adding to results[overview] CURRENT results[overview] = = = = {results['overview']}")
             results['overview'] = self._create_overview(results) 
@@ -131,7 +168,7 @@ class SecWizBackendIntegration:
 
 
     def run_port_scan(self, target: str) -> Dict[str, Any]:
-        """Run port scan only"""
+        """Run enhanced port scan only"""
         self.is_scanning = True
         results = {
             'type': 'port',
@@ -143,9 +180,11 @@ class SecWizBackendIntegration:
         }
         
         try:
-            self.update_progress("🔍 Port scanning in progress...")
+            self.update_progress("🔍 Enhanced port scanning in progress...")
             port_results = scan_ports(target, True)
             print(port_results)
+            
+            # Enhanced port scan results
             results['all_ports'] = {
                 'scanned_ports': ports,
                 'open_ports': port_results.get('open_ports', []),
@@ -155,11 +194,20 @@ class SecWizBackendIntegration:
             results['open_ports_services'] = {
                 'open_ports': port_results.get('open_ports', []),
                 'services': port_results.get('services', {}),
-                'target_urls': port_results.get('target_urls', [])
+                'target_urls': port_results.get('target_urls', []),
+                'risk_summary': port_results.get('risk_summary', {}),
+                'scan_logs': port_results.get('scan_logs', [])
             }
             
-            results['logs'].append(f"Port scan completed: {len(port_results.get('open_ports', []))} open ports found")
-            self.update_progress("✅ Port scan completed successfully!")
+            # Add enhanced logs
+            risk_summary = port_results.get('risk_summary', {})
+            if risk_summary:
+                results['logs'].append(f"Enhanced port scan completed: {len(port_results.get('open_ports', []))} open ports found")
+                results['logs'].append(f"Risk assessment: {risk_summary.get('critical', 0)} critical, {risk_summary.get('high', 0)} high, {risk_summary.get('medium', 0)} medium, {risk_summary.get('low', 0)} low")
+            else:
+                results['logs'].append(f"Port scan completed: {len(port_results.get('open_ports', []))} open ports found")
+            
+            self.update_progress("✅ Enhanced port scan completed successfully!")
             
         except Exception as e:
             results['logs'].append(f"Error during port scan: {str(e)}")
@@ -290,11 +338,21 @@ class SecWizBackendIntegration:
     def _create_overview(self, results: Dict[str, Any]) -> Dict[str, Any]:
         """Create overview summary"""
         print("_create_overview() has been called")
+        # Handle sql_injection data structure safely
+        vulns_data = results.get('vulnerabilities', {})
+        sql_injection_data = vulns_data.get('sql_injection', {})
+        if isinstance(sql_injection_data, dict):
+            sql_vulns_count = len(sql_injection_data.get('vulnerabilities', []))
+        elif isinstance(sql_injection_data, list):
+            sql_vulns_count = len(sql_injection_data)
+        else:
+            sql_vulns_count = 0
+            
         return {
             'total_open_ports': len(results.get('ports', {}).get('open_ports', [])),
             'total_accessible_urls': len(results.get('directories', {}).get('accessible_urls', [])),
             'total_forms_found': len(results.get('vulnerabilities', {}).get('forms', [])),
-            'total_sql_vulnerabilities': len(results.get('vulnerabilities', {}).get('sql_injection', {}).get('vulnerabilities', [])),
+            'total_sql_vulnerabilities': sql_vulns_count,
             'scan_duration': "Calculated duration",
             'risk_level': self._calculate_risk_level(results)
         }
@@ -313,7 +371,14 @@ class SecWizBackendIntegration:
                 risk_score += 1
                 
         # Vulnerability-based risk
-        sql_vulns = len(results.get('vulnerabilities', {}).get('sql_injection', {}).get('vulnerabilities', []))
+        vulns_data = results.get('vulnerabilities', {})
+        sql_injection_data = vulns_data.get('sql_injection', {})
+        if isinstance(sql_injection_data, dict):
+            sql_vulns = len(sql_injection_data.get('vulnerabilities', []))
+        elif isinstance(sql_injection_data, list):
+            sql_vulns = len(sql_injection_data)
+        else:
+            sql_vulns = 0
         risk_score += sql_vulns * 5
         
         # Determine risk level

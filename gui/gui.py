@@ -691,7 +691,7 @@ class SecWizGUI:
         return content_map.get(tab_id, f"Content for {tab_id} not available")
         
     def _format_overview_content(self):
-        """Format overview content
+        """Format overview content with enhanced information
         Defensive: Ensure scan_results is a dict, not a list, to prevent AttributeError.
         """
         if not self.scan_results or not isinstance(self.scan_results, dict):
@@ -699,28 +699,80 @@ class SecWizGUI:
 
         results = self.scan_results
         try:
+            # Get data for overview
+            ports_data = results.get('ports', {})
+            open_ports = ports_data.get('open_ports', [])
+            risk_summary = ports_data.get('risk_summary', {})
+            
+            directories_data = results.get('directories', {})
+            accessible_urls = directories_data.get('accessible_urls', [])
+            
+            vulnerabilities_data = results.get('vulnerabilities', {})
+            forms = vulnerabilities_data.get('forms', [])
+            sql_vulns_count = self._get_sql_vulns_count(results)
+            
+            # Calculate overall risk
+            total_risk = (risk_summary.get('critical', 0) * 4 + 
+                         risk_summary.get('high', 0) * 3 + 
+                         risk_summary.get('medium', 0) * 2 + 
+                         risk_summary.get('low', 0) * 1)
+            
+            if total_risk >= 15:
+                overall_risk = "🔴 CRITICAL"
+            elif total_risk >= 10:
+                overall_risk = "🟠 HIGH"
+            elif total_risk >= 5:
+                overall_risk = "🟡 MEDIUM"
+            else:
+                overall_risk = "🟢 LOW"
+            
             content = f"""
-                        ╔══════════════════════════════════════════════════════════════╗
-                        ║                    SCAN OVERVIEW                             ║
-                        ╚══════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════╗
+║                    ENHANCED SCAN OVERVIEW                    ║
+╚══════════════════════════════════════════════════════════════╝
 
-                        Target: {results.get('target', 'Unknown')}
-                        Scan Type: {results.get('type', 'Unknown').upper()} SCAN
-                        Timestamp: {results.get('timestamp', 'Unknown')}
+🎯 TARGET INFORMATION:
+• Target: {results.get('target', 'Unknown')}
+• Scan Type: {results.get('type', 'Unknown').upper()} SCAN
+• Timestamp: {results.get('timestamp', 'Unknown')}
 
-                        SUMMARY:
-                        • Open Ports: {len(results.get('ports', {}).get('open_ports', []))}
-                        • Accessible URLs: {len(results.get('directories', {}).get('accessible_urls', []))}
-                        • Forms Found: {len(results.get('vulnerabilities', {}).get('forms', []))}
-                        • SQL Vulnerabilities: {len(results.get('vulnerabilities', {}).get('sql_injection', {}).get('vulnerabilities', {}))} #DEBUG THIS  
+📊 SECURITY ASSESSMENT:
+• Overall Risk Level: {overall_risk}
+• Open Ports: {len(open_ports)}
+• Accessible URLs: {len(accessible_urls)}
+• Forms Found: {len(forms)}
+• SQL Vulnerabilities: {sql_vulns_count}
 
-                        {'='*60}`
-                    """
+🔍 PORT RISK BREAKDOWN:
+• Critical Risk: {risk_summary.get('critical', 0)} 🔴
+• High Risk: {risk_summary.get('high', 0)} 🟠
+• Medium Risk: {risk_summary.get('medium', 0)} 🟡
+• Low Risk: {risk_summary.get('low', 0)} 🟢
+
+💡 KEY FINDINGS:
+"""
+            
+            # Add key findings based on scan results
+            if risk_summary.get('critical', 0) > 0:
+                content += f"• ⚠️  {risk_summary.get('critical', 0)} critical security issues detected\n"
+            if risk_summary.get('high', 0) > 0:
+                content += f"• ⚠️  {risk_summary.get('high', 0)} high-risk services exposed\n"
+            if len(accessible_urls) > 0:
+                content += f"• 🌐 {len(accessible_urls)} web directories accessible\n"
+            if sql_vulns_count > 0:
+                content += f"• 🗄️  {sql_vulns_count} SQL injection vulnerabilities found\n"
+            
+            if not any([risk_summary.get('critical', 0), risk_summary.get('high', 0), len(accessible_urls), sql_vulns_count]):
+                content += "• ✅ No major security issues detected\n"
+            
+            content += f"\n{'='*60}"
             return content
         except Exception as e:
-            print(f"Line 721 Fails in gui.py ERROR IS {e}")
+            print(f"Error formatting overview: {e}")
+            return f"Error formatting overview: {str(e)}"
+
     def _format_ports_content(self):
-        """Format ports content"""
+        """Format ports content with enhanced service information"""
         if not self.scan_results:
             return "No port scan results available."
         
@@ -728,18 +780,68 @@ class SecWizGUI:
         ports_data = results.get('ports', {})
         open_ports = ports_data.get('open_ports', [])
         services = ports_data.get('services', {})
+        risk_summary = ports_data.get('risk_summary', {})
+        scan_logs = ports_data.get('scan_logs', [])
         
         content = f"""
 ╔══════════════════════════════════════════════════════════════╗
-║                    PORT SCAN RESULTS                         ║
+║                    ENHANCED PORT SCAN RESULTS                ║
 ╚══════════════════════════════════════════════════════════════╝
 
-Open Ports Found: {len(open_ports)}
+📊 SCAN SUMMARY:
+• Open Ports Found: {len(open_ports)}
+• Critical Risk: {risk_summary.get('critical', 0)}
+• High Risk: {risk_summary.get('high', 0)}
+• Medium Risk: {risk_summary.get('medium', 0)}
+• Low Risk: {risk_summary.get('low', 0)}
 
+🔍 DETAILED PORT ANALYSIS:
 """
+        
         for port in open_ports:
-            service = services.get(port, "Unknown")
-            content += f"• Port {port}: {service}\n"
+            service_info = services.get(port, {})
+            if isinstance(service_info, dict):
+                service_name = service_info.get('name', 'Unknown')
+                service_type = service_info.get('type', 'Unknown')
+                risk_assessment = service_info.get('risk_assessment', {})
+                risk_level = risk_assessment.get('level', 'UNKNOWN')
+                risk_score = risk_assessment.get('score', 0)
+                
+                content += f"\n🔓 Port {port}: {service_name}\n"
+                content += f"   Type: {service_type}\n"
+                content += f"   Risk: {risk_level} ({risk_score}/10)\n"
+                
+                # Add banner information
+                banner_info = service_info.get('banner', {})
+                if banner_info and not banner_info.get('error'):
+                    if 'server' in banner_info:
+                        content += f"   Server: {banner_info.get('server', 'Unknown')}\n"
+                    if 'response_time' in banner_info:
+                        content += f"   Response Time: {banner_info.get('response_time', 0)}s\n"
+                
+                # Add security headers for web services
+                if service_type == 'web_service':
+                    security_headers = service_info.get('security_headers', {})
+                    if security_headers:
+                        grade = security_headers.get('grade', 'F')
+                        score = security_headers.get('score', 0)
+                        content += f"   Security Headers: Grade {grade} ({score:.0%})\n"
+                
+                # Add SSL info for HTTPS
+                if service_name in ['HTTPS', 'HTTPS-ALT']:
+                    ssl_info = service_info.get('ssl_info', {})
+                    if ssl_info and not ssl_info.get('error'):
+                        cert_info = ssl_info.get('certificate', {})
+                        if cert_info:
+                            content += f"   SSL: Certificate Valid\n"
+                
+                # Add recommendations
+                recommendation = service_info.get('recommendation', '')
+                if recommendation:
+                    content += f"   💡 {recommendation}\n"
+            else:
+                # Fallback for old format
+                content += f"• Port {port}: {service_info}\n"
             
         return content
         
@@ -773,7 +875,15 @@ Accessible URLs Found: {len(accessible_urls)}
         results = self.scan_results
         vulns_data = results.get('vulnerabilities', {})
         forms = vulns_data.get('forms', [])
-        sql_vulns = vulns_data.get('sql_injection', {}).get('vulnerabilities', [])
+        
+        # Handle both old and new sql_injection data structures
+        sql_injection_data = vulns_data.get('sql_injection', {})
+        if isinstance(sql_injection_data, dict):
+            sql_vulns = sql_injection_data.get('vulnerabilities', [])
+        elif isinstance(sql_injection_data, list):
+            sql_vulns = sql_injection_data
+        else:
+            sql_vulns = []
         
         content = f"""
 ╔══════════════════════════════════════════════════════════════╗
@@ -918,6 +1028,17 @@ Protected Files: {len(protected_files)}
             content += f"• {file}\n"
             
         return content
+        
+    def _get_sql_vulns_count(self, results):
+        """Helper method to get SQL vulnerabilities count safely"""
+        vulns_data = results.get('vulnerabilities', {})
+        sql_injection_data = vulns_data.get('sql_injection', {})
+        if isinstance(sql_injection_data, dict):
+            return len(sql_injection_data.get('vulnerabilities', []))
+        elif isinstance(sql_injection_data, list):
+            return len(sql_injection_data)
+        else:
+            return 0
         
     def view_results(self):
         """View results"""
